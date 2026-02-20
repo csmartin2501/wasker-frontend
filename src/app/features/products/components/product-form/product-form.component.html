@@ -1,0 +1,168 @@
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+    <h2 class="mb-0">{{ formMode === 'create' ? 'Agregar Producto' : 'Editar Producto' }}</h2>
+    <button 
+      *ngIf="formMode === 'update'"
+      type="button" 
+      class="btn btn-success btn-sm"
+      (click)="resetForm()"
+    >
+      <i class="bi bi-plus">➕</i> Nuevo Producto
+    </button>
+  </div>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" novalidate>
+    <!-- Nombre -->
+    <div class="mb-3">
+      <label for="name" class="form-label">Nombre del Producto *</label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        class="form-control"
+        [class.is-invalid]="isFieldInvalid('name')"
+        placeholder="Ingrese el nombre del producto"
+      >
+      <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
+        {{ getFieldError('name') }}
+      </div>
+    </div>
+
+    <!-- Descripción -->
+    <div class="mb-3">
+      <label for="description" class="form-label">Descripción</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        class="form-control"
+        [class.is-invalid]="isFieldInvalid('description')"
+        placeholder="Descripción del producto (opcional)"
+        rows="3"
+      ></textarea>
+      <div class="invalid-feedback" *ngIf="isFieldInvalid('description')">
+        {{ getFieldError('description') }}
+      </div>
+    </div>
+
+    <!-- Precio y Stock -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="price" class="form-label">Precio *</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input
+              type="number"
+              id="price"
+              formControlName="price"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('price')"
+              placeholder="0.00"
+              step="0.01"
+              min="0"
+            >
+          </div>
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('price')">
+            {{ getFieldError('price') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="stock" class="form-label">Stock *</label>
+          <input
+            type="number"
+            id="stock"
+            formControlName="stock"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('stock')"
+            placeholder="0"
+            min="0"
+          >
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('stock')">
+            {{ getFieldError('stock') }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categoría -->
+    <div class="mb-3">
+      <label for="category" class="form-label">Categoría</label>
+      <input
+        type="text"
+        id="category"
+        formControlName="category"
+        class="form-control"
+        placeholder="Categoría del producto (opcional)"
+      >
+    </div>
+
+    <!-- Imagen URL -->
+    <div class="mb-4">
+      <label for="image" class="form-label">URL de Imagen</label>
+      <input
+        type="url"
+        id="image"
+        formControlName="image"
+        class="form-control"
+        placeholder="https://ejemplo.com/imagen.jpg (opcional)"
+      >
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+      <div class="d-flex gap-2">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="loading || productForm.invalid"
+        >
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+          {{ loading ? 'Procesando...' : (formMode === 'create' ? '✅ Crear Producto' : '📝 Actualizar Producto') }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="resetForm()"
+          [disabled]="loading"
+        >
+          🔄 Limpiar
+        </button>
+      </div>
+
+      <div *ngIf="formMode === 'update'">
+        <button
+          type="button"
+          class="btn btn-outline-danger"
+          (click)="deleteProduct()"
+          [disabled]="loading"
+        >
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+          {{ loading ? 'Eliminando...' : '🗑️ Eliminar' }}
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Información del producto seleccionado -->
+  <div *ngIf="selectedProduct && formMode === 'update'" class="mt-4">
+    <h5 class="text-muted">Producto Seleccionado</h5>
+    <div class="card bg-light">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="mb-1"><strong>ID:</strong> {{ selectedProduct!.id }}</p>
+            <p class="mb-1"><strong>Nombre:</strong> {{ selectedProduct!.name }}</p>
+          </div>
+          <div class="col-sm-6">
+            <p class="mb-1"><strong>Precio:</strong> ${{ selectedProduct!.price }}</p>
+            <p class="mb-0"><strong>Stock:</strong> {{ selectedProduct!.stock }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
