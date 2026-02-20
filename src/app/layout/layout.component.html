@@ -1,4 +1,5 @@
 <!-- Navbar -->
+<div class="d-flex flex-column min-vh-100">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand fw-bold" routerLink="/">
@@ -35,7 +36,7 @@
 </nav>
 
 <!-- Body: Sidebar + Content -->
-<div class="container-fluid">
+<div class="container-fluid flex-grow-1">
   <div class="row">
 
     <!-- Sidebar -->
@@ -78,4 +79,20 @@
     </main>
 
   </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white mt-auto py-3">
+  <div class="container-fluid px-4">
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start">
+        <span class="fw-semibold">🛒 Wasker</span>
+        <span class="text-secondary ms-2">— Sistema de Gestión de Productos</span>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <small class="text-secondary">© {{ currentYear }} Wasker. Todos los derechos reservados.</small>
+      </div>
+    </div>
+  </div>
+</footer>
 </div>
