@@ -43,33 +43,44 @@
       <div class="position-sticky top-0 pt-2">
         <p class="text-uppercase fw-semibold small px-3 mb-2 text-light">Menú</p>
         <ul class="nav flex-column">
-          <li class="nav-item">
+          <!-- Productos (collapsible) -->
+          <li class="nav-item-main nav-item">
             <a
-              class="nav-link text-light px-3 py-2 rounded"
-              routerLink="/products"
-              routerLinkActive="active"
+              class="nav-link sidebar-toggle text-light px-3 py-2 rounded d-flex justify-content-between align-items-center"
+              href="#submenuProductos"
+              data-bs-toggle="collapse"
+              role="button"
+              aria-expanded="false"
+              aria-controls="submenuProductos"
             >
-              <span class="me-2">📦</span> Productos
+              <span><span class="me-2">📦</span> Productos</span>
+              <span class="sidebar-arrow">&#9662;</span>
             </a>
+            <div class="collapse" id="submenuProductos">
+              <ul class="nav flex-column submenu ps-3">
+                <li class="nav-item">
+                  <a
+                    class="nav-link text-light px-3 py-1 rounded"
+                    routerLink="/products/list"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    routerLinkActive="active"
+                  >
+                    <span class="me-2">📋</span> Lista de Productos
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link text-light px-3 py-1 rounded"
+                    routerLink="/products/form"
+                    routerLinkActive="active"
+                  >
+                    <span class="me-2">➕</span> Agregar Producto
+                  </a>
+                </li>
+              </ul>
+            </div>
           </li>
-          <li class="nav-item">
-            <a
-              class="nav-link text-light px-3 py-2 rounded"
-              routerLink="/reports"
-              routerLinkActive="active"
-            >
-              <span class="me-2">📊</span> Reportes
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link text-light px-3 py-2 rounded"
-              routerLink="/settings"
-              routerLinkActive="active"
-            >
-              <span class="me-2">⚙️</span> Configuración
-            </a>
-          </li>
+
         </ul>
       </div>
     </nav>

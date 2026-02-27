@@ -27,6 +27,38 @@
 
 /* Item activo */
 .sidebar1 .nav-link.active {
-  background-color: #c7b563;  /* tu azul */
+  background-color: #c7b563;
   color: #ffffff;
+}
+
+/* Toggle button (padre del dropdown) */
+.sidebar1 .sidebar-toggle {
+  cursor: pointer;
+}
+
+.sidebar1 .sidebar-toggle:not(.collapsed) .sidebar-arrow,
+.sidebar1 .sidebar-toggle[aria-expanded="true"] .sidebar-arrow {
+  transform: rotate(-180deg);
+}
+
+.sidebar-arrow {
+  font-size: 0.75rem;
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+
+/* Sub-menú */
+.sidebar1 .submenu .nav-link {
+  font-size: 0.875rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.sidebar1 .submenu .nav-link:hover {
+  background-color: rgb(151, 136, 71);
+  color: #ffffff;
+}
+
+.nav-item-main {
+    box-shadow: 4px 0 10px rgba(0,0,0,0.15);
 }
