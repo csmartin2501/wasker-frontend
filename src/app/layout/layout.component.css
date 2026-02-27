@@ -1,0 +1,32 @@
+.nav1 {
+    background-color: #49868B;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.15);
+}
+
+.sidebar1 {
+    background-color: #49868B;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.15);
+}
+
+.footer1 {
+    background-color: #49868B;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.15);
+}
+
+.sidebar1 .nav-link {
+  color: #CBD5E1;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+/* Hover personalizado */
+.sidebar1 .nav-link:hover {
+  background-color: rgb(151, 136, 71);  /* <-- EL COLOR QUE QUIERAS */
+  color: #ffffff;
+}
+
+/* Item activo */
+.sidebar1 .nav-link.active {
+  background-color: #c7b563;  /* tu azul */
+  color: #ffffff;
+}

@@ -1,9 +1,9 @@
 <!-- Navbar -->
 <div class="d-flex flex-column min-vh-100">
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="nav1 navbar navbar-expand-lg navbar-dark ">
   <div class="container-fluid">
-    <a class="navbar-brand fw-bold" routerLink="/">
-      🛒 Wasker
+    <a class="container-logo navbar-brand" routerLink="/">
+      <span class="logo-title logo-gold ms-3 me-3"><img id="logo-img" src="assets/logo_gatobarato.png" alt="Wasker Logo"> Wasker </span>
     </a>
 
     <button
@@ -38,33 +38,34 @@
 <!-- Body: Sidebar + Content -->
 <div class="container-fluid flex-grow-1">
   <div class="row">
-
     <!-- Sidebar -->
-    <nav class="col-md-2 col-lg-2 d-none d-md-block bg-light border-end min-vh-100 pt-3">
+    <nav class="sidebar1 col-md-2 col-lg-2 d-none d-md-block border-end min-vh-100 pt-3">
       <div class="position-sticky top-0 pt-2">
-        <p class="text-muted text-uppercase fw-semibold small px-3 mb-2">Menú</p>
+        <p class="text-uppercase fw-semibold small px-3 mb-2 text-light">Menú</p>
         <ul class="nav flex-column">
           <li class="nav-item">
             <a
-              class="nav-link text-dark px-3 py-2 rounded"
+              class="nav-link text-light px-3 py-2 rounded"
               routerLink="/products"
-              routerLinkActive="active bg-primary text-white"
+              routerLinkActive="active"
             >
               <span class="me-2">📦</span> Productos
             </a>
           </li>
           <li class="nav-item">
             <a
-              class="nav-link text-secondary px-3 py-2 rounded disabled"
-              href="#"
+              class="nav-link text-light px-3 py-2 rounded"
+              routerLink="/reports"
+              routerLinkActive="active"
             >
               <span class="me-2">📊</span> Reportes
             </a>
           </li>
           <li class="nav-item">
             <a
-              class="nav-link text-secondary px-3 py-2 rounded disabled"
-              href="#"
+              class="nav-link text-light px-3 py-2 rounded"
+              routerLink="/settings"
+              routerLinkActive="active"
             >
               <span class="me-2">⚙️</span> Configuración
             </a>
@@ -82,15 +83,15 @@
 </div>
 
 <!-- Footer -->
-<footer class="bg-dark text-white mt-auto py-3">
+<footer class="footer1 text-white mt-auto py-3">
   <div class="container-fluid px-4">
     <div class="row align-items-center">
       <div class="col-md-6 text-center text-md-start">
         <span class="fw-semibold">🛒 Wasker</span>
-        <span class="text-secondary ms-2">— Sistema de Gestión de Productos</span>
+        <span class="text-light fst-italic ms-2">— Sistema de Gestión de Productos</span>
       </div>
       <div class="col-md-6 text-center text-md-end">
-        <small class="text-secondary">© {{ currentYear }} Wasker. Todos los derechos reservados.</small>
+        <small class="text-light fst-italic">© {{ currentYear }} Wasker. Todos los derechos reservados.</small>
       </div>
     </div>
   </div>
