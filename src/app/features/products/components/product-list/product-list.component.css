@@ -1,1 +1,14 @@
-/* Este componente usa clases de Bootstrap */
+.no-products-div {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.card {
+    cursor: pointer; 
+    transition: all 0.2s;
+}
+
+.row {
+    max-height: 500px; 
+    overflow-y: auto;
+}
