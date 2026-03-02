@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Product } from '../../../../core/models/product.interface';
+import { ProductService } from '../../../../core/services/product.service';
 
 @Component({
   selector: 'app-product-list',
@@ -13,7 +14,7 @@ export class ProductListComponent implements OnInit {
   loading = false;
   searchTerm = '';
 
-  constructor() { }
+  constructor(private productService: ProductService) { }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -21,27 +22,16 @@ export class ProductListComponent implements OnInit {
 
   loadProducts(): void {
     this.loading = true;
-    // TODO: Implementar llamada al servicio
-    // this.productService.getProducts().subscribe({
-    //   next: (products) => {
-    //     this.products = products;
-    //     this.loading = false;
-    //   },
-    //   error: (error) => {
-    //     console.error('Error loading products:', error);
-    //     this.loading = false;
-    //   }
-    // });
-
-    // Datos de ejemplo para pruebas
-    setTimeout(() => {
-      this.products = [
-        { id: 1, name: 'Producto 1', price: 10.99, stock: 25, description: 'Descripción del producto 1' },
-        { id: 2, name: 'Producto 2', price: 15.99, stock: 10, description: 'Descripción del producto 2' },
-        { id: 3, name: 'Producto 3', price: 8.99, stock: 0, description: 'Descripción del producto 3' }
-      ];
-      this.loading = false;
-    }, 1000);
+    this.productService.getListProducts().subscribe({
+      next: (products) => {
+        this.products = products;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading products:', error);
+        this.loading = false;
+      }
+    });
   }
 
   onProductSelect(product: Product): void {
@@ -51,11 +41,12 @@ export class ProductListComponent implements OnInit {
 
   getFilteredProducts(): Product[] {
     if (!this.searchTerm.trim()) {
+      console.log(this.products);
       return this.products;
     }
     return this.products.filter(product =>
-      product.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      product.description?.toLowerCase().includes(this.searchTerm.toLowerCase())
+      product.nombre_producto?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      product.sku_producto?.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 

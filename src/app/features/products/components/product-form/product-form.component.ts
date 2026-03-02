@@ -40,12 +40,12 @@ export class ProductFormComponent implements OnInit, OnChanges {
 
   private loadProductToForm(product: Product): void {
     this.productForm.patchValue({
-      name: product.name,
-      description: product.description || '',
-      price: product.price,
+      name: product.nombre_producto,
+      // description: product.description || '',
+      price: product.precio_producto,
       stock: product.stock,
-      category: product.category || '',
-      image: product.image || ''
+      category: product.id_categoriaproducto || '',
+      // image: product.image || ''
     });
   }
 

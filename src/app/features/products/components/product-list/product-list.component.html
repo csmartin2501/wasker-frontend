@@ -40,27 +40,27 @@
         [class.border-primary]="selectedProductId === product.id"
         [class.bg-light]="selectedProductId === product.id"
         (click)="onProductSelect(product)"
-      >
+      > 
         <div class="card-body p-3">
           <div class="d-flex justify-content-between align-items-start mb-2">
-            <h5 class="card-title mb-0 text-truncate">{{ product.name }}</h5>
-            <span class="badge bg-success fs-6 ms-2">${{ product.price | number:'1.2-2' }}</span>
+            <h5 class="card-title mb-0 text-truncate">{{ product.nombre_producto }}</h5>
+            <span class="badge bg-success fs-6 ms-2">${{ product.precio_producto | number:'1.2-2' }}</span>
           </div>
           
-          <p class="card-text text-muted small mb-2" *ngIf="product.description">
-            {{ product.description }}
-          </p>
+          <!-- <p class="card-text text-muted small mb-2" *ngIf="product.fecha_creacion">
+            {{ product.fecha_creacion }}
+          </p> -->
           
           <div class="d-flex justify-content-between align-items-center">
             <span 
               class="badge"
-              [class.bg-success]="getStockStatus(product.stock) === 'in-stock'"
-              [class.bg-warning]="getStockStatus(product.stock) === 'low-stock'"
-              [class.bg-danger]="getStockStatus(product.stock) === 'out-of-stock'"
+              [class.bg-success]="getStockStatus(product.stock ?? 0) === 'in-stock'"
+              [class.bg-warning]="getStockStatus(product.stock ?? 0) === 'low-stock'"
+              [class.bg-danger]="getStockStatus(product.stock ?? 0) === 'out-of-stock'"
             >
               Stock: {{ product.stock }}
             </span>
-            <small class="text-muted">SKU: {{ product.id }}</small>
+            <small class="text-muted">SKU: {{ product.sku_producto }}</small>
           </div>
         </div>
       </div>

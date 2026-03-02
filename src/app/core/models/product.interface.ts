@@ -1,14 +1,11 @@
 export interface Product {
   id?: number;
-  name: string;
-  description?: string;
-  price: number;
-  stock: number;
-  category?: string;
-  image?: string;
-  isActive?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  nombre_producto?: string;
+  sku_producto?: string;
+  precio_producto?: number;
+  stock?: number;
+  fecha_creacion?: string;
+  id_categoriaproducto?: number;
 }
 
 export interface ProductCreateRequest {
