@@ -46,7 +46,7 @@ export class ProductListComponent implements OnInit {
     }
     return this.products.filter(product =>
       product.nombre_producto?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      product.sku_producto?.toLowerCase().includes(this.searchTerm.toLowerCase())
+      product.sku_producto?.toString()?.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
