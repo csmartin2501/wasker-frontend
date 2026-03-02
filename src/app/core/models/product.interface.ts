@@ -5,6 +5,7 @@ export interface Product {
   precio_producto?: number;
   stock?: number;
   fecha_creacion?: string;
+  imagen_url_producto?: string;
   id_categoriaproducto?: number;
 }
 

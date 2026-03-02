@@ -41,7 +41,7 @@ export class ProductListComponent implements OnInit {
 
   getFilteredProducts(): Product[] {
     if (!this.searchTerm.trim()) {
-      console.log(this.products);
+      // console.log(this.products);
       return this.products;
     }
     return this.products.filter(product =>
