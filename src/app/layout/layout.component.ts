@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { CartService } from '../core/services/cart.service';
 
 @Component({
   selector: 'app-layout',
@@ -7,4 +9,9 @@ import { Component } from '@angular/core';
 })
 export class LayoutComponent {
   currentYear = new Date().getFullYear();
+  totalCartItems$: Observable<number>;
+
+  constructor(private cartService: CartService) {
+    this.totalCartItems$ = this.cartService.totalItems$;
+  }
 }

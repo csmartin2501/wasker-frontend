@@ -18,6 +18,10 @@ const routes: Routes = [
         loadChildren: () => import('./features/products/products.module').then(m => m.ProductsModule)
       },
       {
+        path: 'cart',
+        loadChildren: () => import('./features/cart/cart.module').then(m => m.CartModule)
+      },
+      {
         path: '',
         redirectTo: 'products',
         pathMatch: 'full'

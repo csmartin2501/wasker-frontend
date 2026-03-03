@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Producto } from '../../../../core/models/producto.interface';
 import { ProductoService } from '../../../../core/services/producto.service';
+import { CartService } from '../../../../core/services/cart.service';
 
 @Component({
   selector: 'app-product-list',
@@ -14,7 +15,12 @@ export class ProductListComponent implements OnInit {
   loading = false;
   searchTerm = '';
 
-  constructor(private productoService: ProductoService) { }
+  addedProductId: number | null = null;
+
+  constructor(
+    private productoService: ProductoService,
+    private cartService: CartService
+  ) { }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -100,5 +106,16 @@ export class ProductListComponent implements OnInit {
 
   trackByProductId(index: number, product: Producto): number {
     return product.id_producto || index;
+  }
+
+  onAddToCart(product: Producto, event: Event): void {
+    event.stopPropagation();
+    this.cartService.addItem(product);
+    this.addedProductId = product.id_producto ?? null;
+    setTimeout(() => {
+      if (this.addedProductId === product.id_producto) {
+        this.addedProductId = null;
+      }
+    }, 1200);
   }
 }

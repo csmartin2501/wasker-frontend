@@ -1,0 +1,133 @@
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">🛒 Carrito de Compras</h4>
+    <button
+      class="btn btn-outline-danger btn-sm"
+      (click)="onClearCart()"
+      [disabled]="(totalItems$ | async) === 0"
+    >
+      🗑️ Vaciar carrito
+    </button>
+  </div>
+
+  <ng-container *ngIf="items$ | async as items">
+
+    <!-- Carrito vacío -->
+    <div *ngIf="items.length === 0" class="text-center py-5">
+      <div class="display-1">🛒</div>
+      <h5 class="text-muted mt-3">Tu carrito está vacío</h5>
+      <p class="text-muted">Agrega productos desde la lista de productos.</p>
+      <a routerLink="/products/list" class="btn btn-primary mt-2">
+        📦 Ver Productos
+      </a>
+    </div>
+
+    <!-- Tabla de items -->
+    <div *ngIf="items.length > 0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 60px;"></th>
+              <th>Producto</th>
+              <th class="text-center">Precio unitario</th>
+              <th class="text-center" style="width: 140px;">Cantidad</th>
+              <th class="text-end">Subtotal</th>
+              <th style="width: 50px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let item of items; trackBy: trackByProductId"
+            >
+              <!-- Imagen -->
+              <td>
+                <img
+                  class="img-fluid rounded"
+                  style="width: 50px; height: 50px; object-fit: cover;"
+                  src="assets/images/products/{{ item.producto.imagen_url_producto }}"
+                  alt="{{ item.producto.nombre_producto }}"
+                >
+              </td>
+
+              <!-- Nombre y SKU -->
+              <td>
+                <div class="fw-semibold">{{ item.producto.nombre_producto }}</div>
+                <small class="text-muted">SKU: {{ item.producto.sku_producto }}</small>
+              </td>
+
+              <!-- Precio unitario -->
+              <td class="text-center">
+                ${{ item.producto.precio_producto | number:'1.2-2' }}
+              </td>
+
+              <!-- Cantidad -->
+              <td class="text-center">
+                <input
+                  type="number"
+                  class="form-control form-control-sm text-center mx-auto"
+                  style="width: 80px;"
+                  [value]="item.cantidad"
+                  min="1"
+                  [max]="item.producto.stock"
+                  (change)="onChangeCantidad(item.producto.id_producto!, $event)"
+                >
+              </td>
+
+              <!-- Subtotal -->
+              <td class="text-end fw-bold">
+                ${{ item.subtotal | number:'1.2-2' }}
+              </td>
+
+              <!-- Eliminar -->
+              <td class="text-center">
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="onRemove(item.producto.id_producto!)"
+                  title="Eliminar"
+                >
+                  ✕
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Resumen del total -->
+      <div class="row justify-content-end mt-3">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title mb-3">Resumen del pedido</h5>
+
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Cantidad de productos:</span>
+                <span class="fw-semibold">{{ totalItems$ | async }}</span>
+              </div>
+
+              <hr>
+
+              <div class="d-flex justify-content-between mb-3">
+                <span class="fw-bold fs-5">Total:</span>
+                <span class="fw-bold fs-5 text-success">
+                  ${{ total$ | async | number:'1.2-2' }}
+                </span>
+              </div>
+
+              <button class="btn btn-success w-100">
+                ✅ Confirmar pedido
+              </button>
+
+              <a routerLink="/products/list" class="btn btn-outline-secondary w-100 mt-2">
+                ← Seguir comprando
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>
