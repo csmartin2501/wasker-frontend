@@ -1,15 +1,17 @@
-export interface Product {
-  id?: number;
+import { ProductoCategoria } from "./producto-categoria.interface";
+
+export interface Producto {
+  id_producto?: number;
   nombre_producto?: string;
   sku_producto?: string;
   precio_producto?: number;
   stock?: number;
   fecha_creacion?: string;
   imagen_url_producto?: string;
-  id_categoriaproducto?: number;
+  productoCategoria?: ProductoCategoria;
 }
 
-export interface ProductCreateRequest {
+export interface ProductoCreateRequest {
   name: string;
   description?: string;
   price: number;
@@ -18,6 +20,6 @@ export interface ProductCreateRequest {
   image?: string;
 }
 
-export interface ProductUpdateRequest extends Partial<ProductCreateRequest> {
+export interface ProductoUpdateRequest extends Partial<ProductoCreateRequest> {
   id: number;
 }

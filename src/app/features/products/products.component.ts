@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Product } from '../../core/models/product.interface';
+import { Producto } from '../../core/models/producto.interface';
 
 @Component({
   selector: 'app-products',
@@ -7,11 +7,11 @@ import { Product } from '../../core/models/product.interface';
   styleUrls: ['./products.component.css']
 })
 export class ProductsComponent {
-  selectedProduct: Product | null = null;
+  selectedProduct: Producto | null = null;
 
   constructor() {}
 
-  onProductSelected(product: Product): void {
+  onProductSelected(product: Producto): void {
     this.selectedProduct = product;
   }
 }

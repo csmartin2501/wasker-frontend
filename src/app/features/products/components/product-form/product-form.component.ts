@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Product, ProductCreateRequest, ProductUpdateRequest } from '../../../../core/models/product.interface';
+import { Producto, ProductoCreateRequest, ProductoUpdateRequest } from '../../../../core/models/producto.interface';
 
 @Component({
   selector: 'app-product-form',
   templateUrl: './product-form.component.html'
 })
 export class ProductFormComponent implements OnInit, OnChanges {
-  @Input() selectedProduct: Product | null = null;
+  @Input() selectedProduct: Producto | null = null;
   
   productForm!: FormGroup;
   formMode: 'create' | 'update' = 'create';
@@ -38,13 +38,13 @@ export class ProductFormComponent implements OnInit, OnChanges {
   }
 
 
-  private loadProductToForm(product: Product): void {
+  private loadProductToForm(product: Producto): void {
     this.productForm.patchValue({
       name: product.nombre_producto,
       // description: product.description || '',
       price: product.precio_producto,
       stock: product.stock,
-      category: product.id_categoriaproducto || '',
+      category: product.productoCategoria?.id_producto_categoria || '',
       // image: product.image || ''
     });
   }
@@ -61,11 +61,11 @@ export class ProductFormComponent implements OnInit, OnChanges {
     if (this.formMode === 'create') {
       this.createProduct(formData);
     } else if (this.formMode === 'update' && this.selectedProduct) {
-      this.updateProduct({ ...formData, id: this.selectedProduct.id });
+      this.updateProduct({ ...formData, id: this.selectedProduct.id_producto });
     }
   }
 
-  createProduct(productData: ProductCreateRequest): void {
+  createProduct(productData: ProductoCreateRequest): void {
     // TODO: Implementar llamada al servicio
     // this.productService.createProduct(productData).subscribe({
     //   next: (createdProduct) => {
@@ -88,7 +88,7 @@ export class ProductFormComponent implements OnInit, OnChanges {
     }, 1000);
   }
 
-  updateProduct(productData: ProductUpdateRequest): void {
+  updateProduct(productData: ProductoUpdateRequest): void {
     // TODO: Implementar llamada al servicio
     // this.productService.updateProduct(productData).subscribe({
     //   next: (updatedProduct) => {
@@ -110,7 +110,7 @@ export class ProductFormComponent implements OnInit, OnChanges {
   }
 
   deleteProduct(): void {
-    if (!this.selectedProduct || !this.selectedProduct.id) return;
+    if (!this.selectedProduct || !this.selectedProduct.id_producto) return;
 
     if (!confirm('¿Estás seguro de que quieres eliminar este producto?')) {
       return;
@@ -119,7 +119,7 @@ export class ProductFormComponent implements OnInit, OnChanges {
     this.loading = true;
     
     // TODO: Implementar llamada al servicio
-    // this.productService.deleteProduct(this.selectedProduct.id).subscribe({
+    // this.productService.deleteProduct(this.selectedProduct.id_producto).subscribe({
     //   next: () => {
     //     console.log('Producto eliminado');
     //     this.resetForm();
@@ -133,7 +133,7 @@ export class ProductFormComponent implements OnInit, OnChanges {
 
     // Simulación
     setTimeout(() => {
-      console.log('Producto eliminado:', this.selectedProduct?.id);
+      console.log('Producto eliminado:', this.selectedProduct?.id_producto);
       this.resetForm();
       this.loading = false;
       alert('Producto eliminado exitosamente');
