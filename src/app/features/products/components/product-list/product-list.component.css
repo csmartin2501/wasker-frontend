@@ -3,12 +3,101 @@
     margin-bottom: 1rem;
 }
 
-.card {
-    cursor: pointer; 
-    transition: all 0.2s;
+/* ===== Buscador ===== */
+.input-group .input-group-text {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: #ffffff;
 }
 
+.input-group .form-control {
+    border-color: var(--border-color);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group .form-control:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(61, 122, 128, 0.12);
+}
+
+/* ===== Cards de producto ===== */
+.card {
+    cursor: pointer;
+    transition: all 0.22s ease;
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--card-bg);
+    box-shadow: var(--shadow-sm);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--brand-primary-light);
+}
+
+.card.border-primary {
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 0 0 3px rgba(61, 122, 128, 0.18), var(--shadow-md) !important;
+}
+
+.card .card-title {
+    font-size: 0.90rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    line-height: 1.3;
+}
+
+.card .badge.bg-success {
+    background-color: #1A8754 !important;
+    font-size: 0.85rem !important;
+    padding: 5px 9px;
+    border-radius: 6px;
+}
+
+.card small.text-muted {
+    font-size: 0.75rem;
+    color: var(--text-muted) !important;
+}
+
+.card img.img-fluid {
+    border-radius: 8px;
+    transition: transform 0.22s ease;
+}
+
+.card:hover img.img-fluid {
+    transform: scale(1.04);
+}
+
+/* ===== Grid de productos ===== */
 .row {
-    max-height: 500px; 
+    max-height: 560px;
     overflow-y: auto;
+}
+
+/* ===== Botón agregar al carrito ===== */
+.btn.btn-success {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+    font-size: 0.80rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 7px;
+    transition: all 0.18s ease;
+}
+
+.btn.btn-success:hover:not(:disabled) {
+    background-color: var(--brand-primary-dark) !important;
+    border-color: var(--brand-primary-dark) !important;
+    transform: translateY(-1px);
+}
+
+.btn.btn-outline-success {
+    border-color: var(--brand-gold) !important;
+    color: var(--brand-gold-dark) !important;
+    font-size: 0.80rem;
+    font-weight: 600;
+    border-radius: 7px;
+    background-color: rgba(212, 175, 55, 0.06) !important;
 }

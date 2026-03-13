@@ -1,1 +1,125 @@
-/* Este componente usa clases de Bootstrap */
+/* ===== Encabezado del formulario ===== */
+h2.mb-0 {
+    color: var(--brand-primary-dark);
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+.border-bottom {
+    border-color: var(--border-color) !important;
+}
+
+.border-top {
+    border-color: var(--border-color) !important;
+}
+
+/* ===== Labels ===== */
+.form-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--brand-primary-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+}
+
+/* ===== Inputs y textareas ===== */
+.form-control {
+    border-color: var(--border-color);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    background-color: #F8FBFB;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control::placeholder {
+    color: #A8B8BB;
+}
+
+.form-control:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(61, 122, 128, 0.12);
+    background-color: #ffffff;
+}
+
+.form-control.is-invalid {
+    border-color: #E05555;
+    background-image: none;
+}
+
+.invalid-feedback {
+    font-size: 0.78rem;
+    color: #C93C3C;
+}
+
+/* ===== Input group prefix ($) ===== */
+.input-group-text {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: #ffffff;
+    font-weight: 700;
+    border-radius: 8px 0 0 8px;
+}
+
+/* ===== Botones de acción ===== */
+.btn-primary {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark)) !important;
+    border-color: transparent !important;
+    font-weight: 600;
+    border-radius: 8px;
+    letter-spacing: 0.02em;
+    box-shadow: 0 3px 10px rgba(61, 122, 128, 0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--brand-primary-dark), #1E4E53) !important;
+    box-shadow: 0 5px 14px rgba(61, 122, 128, 0.35);
+    transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+.btn-outline-secondary {
+    border-color: var(--brand-primary-light) !important;
+    color: var(--brand-primary) !important;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.18s ease;
+}
+
+.btn-outline-secondary:hover:not(:disabled) {
+    background-color: rgba(61, 122, 128, 0.08) !important;
+    color: var(--brand-primary-dark) !important;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #1A8754, #156B44) !important;
+    border-color: transparent !important;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+/* ===== Card de producto seleccionado ===== */
+.card.bg-light {
+    background-color: #EEF6F7 !important;
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+}
+
+.card.bg-light p strong {
+    color: var(--brand-primary-dark);
+}
+
+h5.text-muted {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted) !important;
+    font-weight: 700;
+}

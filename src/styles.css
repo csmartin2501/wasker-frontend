@@ -1,13 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================================
+   WASKER — Estilos globales
+   Paleta de colores
+   --brand-primary:       #3D7A80  (teal profundo)
+   --brand-primary-dark:  #2C6268
+   --brand-primary-light: #5A9EA5
+   --brand-gold:          #D4AF37  (dorado limpio)
+   --brand-gold-dark:     #B8960F
+   --page-bg:             #F4F7F8
+   ============================================================ */
+
+:root {
+  --brand-primary:       #3D7A80;
+  --brand-primary-dark:  #2C6268;
+  --brand-primary-light: #5A9EA5;
+  --brand-gold:          #D4AF37;
+  --brand-gold-dark:     #B8960F;
+  --brand-gold-muted:    #C9A227;
+  --sidebar-text:        #E2EEF0;
+  --page-bg:             #F4F7F8;
+  --card-bg:             #FFFFFF;
+  --text-dark:           #1C2B2D;
+  --text-muted:          #6B7C80;
+  --border-color:        #D6E4E6;
+  --shadow-sm:           0 2px 8px rgba(61, 122, 128, 0.10);
+  --shadow-md:           0 4px 20px rgba(61, 122, 128, 0.15);
+}
+
 * {
   font-family: 'Inter', sans-serif;
 }
 
+body {
+  background-color: var(--page-bg);
+  color: var(--text-dark);
+}
+
 .logo-title {
-    /* font-family: 'Luckiest Guy', cursive; */
     font-family: "Chewy", system-ui;
     font-style: normal;
-    font-size: 30px;
+    font-size: 28px;
+    letter-spacing: 0.5px;
+    color: var(--brand-gold);
 }
 
 #logo-img {
@@ -15,16 +48,40 @@
     height: 60px;
 }
 
-/* .container-logo {
-    background: linear-gradient(to right, #6b7079, #696262);
-    border-radius: 45%;
-} */
+/* Sobrescribir colores semánticos de Bootstrap con la paleta de marca */
+.btn-primary {
+  --bs-btn-bg: var(--brand-primary);
+  --bs-btn-border-color: var(--brand-primary);
+  --bs-btn-hover-bg: var(--brand-primary-dark);
+  --bs-btn-hover-border-color: var(--brand-primary-dark);
+  --bs-btn-active-bg: var(--brand-primary-dark);
+  --bs-btn-focus-shadow-rgb: 61, 122, 128;
+}
 
-/* .logo-gold {
-    color: #c7b563;
-} */
+.btn-outline-primary {
+  --bs-btn-color: var(--brand-primary);
+  --bs-btn-border-color: var(--brand-primary);
+  --bs-btn-hover-bg: var(--brand-primary);
+  --bs-btn-hover-border-color: var(--brand-primary);
+  --bs-btn-active-bg: var(--brand-primary-dark);
+}
 
-/* .chewy-regular {
-  font-family: "Chewy", system-ui;
+.spinner-border.text-primary {
+  color: var(--brand-primary) !important;
+}
 
-} */
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--page-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--brand-primary-light);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-primary);
+}
