@@ -11,15 +11,15 @@ import { LoginRequest, LoginResponse } from '../models/auth.interface';
 export class AuthService {
 
   private readonly apiUrl = environment.apiUrl;
-  private readonly TOKEN_KEY = 'auth_token';
+  private readonly TOKEN_KEY = 'token';
 
   constructor(private http: HttpClient, private router: Router) {}
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
       tap(response => {
-        if (response?.token) {
-          localStorage.setItem(this.TOKEN_KEY, response.token);
+        if (response?.access_token) {
+          localStorage.setItem(this.TOKEN_KEY, response.access_token);
         }
       })
     );

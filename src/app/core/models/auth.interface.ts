@@ -4,6 +4,6 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  token: string;
-  expiration?: string;
+  access_token: string;
+  refresh_token?: string;
 }
