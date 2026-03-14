@@ -1,0 +1,42 @@
+<div class="modal-backdrop" [class.show]="visible" [style.opacity]="visible ? 0.5 : 0" [style.zIndex]="visible ? 1040 : 'auto'" [style.display]="visible ? 'block' : 'none'"></div>
+<div class="modal" [class.show]="visible" [style.display]="visible ? 'block' : 'none'" [style.zIndex]="visible ? 1050 : 'auto'" [style.opacity]="visible ? 1 : 0" [style.position]="'fixed'" [style.top]="'0'" [style.left]="'0'" [style.width]="'100%'" [style.height]="'100%'" [style.overflow]="'auto'">
+  <div class="modal-dialog" [style.margin-top]="'20vh'" [style.max-width]="'500px'" [style.margin]="'1.75rem auto'">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ product ? 'Editar Producto' : 'Nuevo Producto' }}</h5>
+        <button type="button" class="btn-close" (click)="onCancel()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Formulario simple para editar el producto -->
+        <div class="mb-3">
+          <label class="form-label">Nombre del Producto</label>
+          <input type="text" class="form-control" [(ngModel)]="nombreProducto" placeholder="Nombre del producto">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Precio</label>
+          <input type="number" class="form-control" [(ngModel)]="precioProducto" step="0.01" min="0" placeholder="Precio">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Stock</label>
+          <input type="number" class="form-control" [(ngModel)]="stockProducto" min="0" placeholder="Stock">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">SKU</label>
+          <input type="text" class="form-control" [(ngModel)]="skuProducto" placeholder="SKU">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">URL de Imagen</label>
+          <input type="url" class="form-control" [(ngModel)]="imagenUrlProducto" placeholder="URL de imagen">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Categoría (ID)</label>
+          <input type="number" class="form-control" [(ngModel)]="categoriaId" min="1" placeholder="ID de categoría">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="onSave()">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>

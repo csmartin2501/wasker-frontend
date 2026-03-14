@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Producto, ProductoCreateRequest, ProductoUpdateRequest } from '../../../../core/models/producto.interface';
+import { ProductService } from '../../../../services/product.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-product-form',
@@ -8,12 +10,15 @@ import { Producto, ProductoCreateRequest, ProductoUpdateRequest } from '../../..
 })
 export class ProductFormComponent implements OnInit, OnChanges {
   @Input() selectedProduct: Producto | null = null;
-  
+   
   productForm!: FormGroup;
   formMode: 'create' | 'update' = 'create';
   loading = false;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(
+    private fb: FormBuilder,
+    private productService: ProductService
+  ) { }
 
   ngOnInit(): void {
     this.productForm = this.fb.group({
@@ -38,16 +43,16 @@ export class ProductFormComponent implements OnInit, OnChanges {
   }
 
 
-  private loadProductToForm(product: Producto): void {
-    this.productForm.patchValue({
-      name: product.nombre_producto,
-      // description: product.description || '',
-      price: product.precio_producto,
-      stock: product.stock,
-      category: product.productoCategoria?.id_producto_categoria || '',
-      // image: product.image || ''
-    });
-  }
+    private loadProductToForm(product: Producto): void {
+        this.productForm.patchValue({
+          name: product.nombre_producto,
+          // description: product.description || '',
+          price: product.precio_producto,
+          stock: product.stock,
+          category: product.productoCategoria?.id_producto_categoria?.toString() || '',
+          // image: product.image || ''
+        });
+      }
 
   onSubmit(): void {
     if (this.productForm.invalid) {
@@ -65,49 +70,60 @@ export class ProductFormComponent implements OnInit, OnChanges {
     }
   }
 
-  createProduct(productData: ProductoCreateRequest): void {
-    // TODO: Implementar llamada al servicio
-    // this.productService.createProduct(productData).subscribe({
-    //   next: (createdProduct) => {
-    //     console.log('Producto creado:', createdProduct);
-    //     this.resetForm();
-    //     this.loading = false;
-    //   },
-    //   error: (error) => {
-    //     console.error('Error creando producto:', error);
-    //     this.loading = false;
-    //   }
-    // });
+    createProduct(productData: ProductoCreateRequest): void {
+      // Map form data to service format
+      const productToCreate: any = {
+        nombre_producto: productData.name,
+        precio_producto: productData.price,
+        stock: productData.stock,
+        imagen_url_producto: productData.image || undefined,
+        // Note: sku_producto is missing from form - this needs to be added to the form
+        // For now using a placeholder - THIS IS A TEMPORARY SOLUTION
+        sku_producto: `TEMP-${Date.now()}`,
+        // Note: category needs to be converted from string to number
+        id_producto_categoria: productData.category ? parseInt(productData.category, 10) : 0
+      };
 
-    // Simulación
-    setTimeout(() => {
-      console.log('Producto creado:', productData);
-      this.resetForm();
+      this.productService.createProduct(productToCreate).subscribe({
+        next: (createdProduct) => {
+          console.log('Producto creado:', createdProduct);
+          this.resetForm();
+          this.loading = false;
+          alert('Producto creado exitosamente');
+        },
+        error: (error) => {
+          console.error('Error creando producto:', error);
+          this.loading = false;
+          alert('Error al crear el producto: ' + error.message);
+        }
+      });
+    }
+
+    updateProduct(productData: ProductoUpdateRequest): void {
+      if (!this.selectedProduct || !this.selectedProduct.id_producto) {
+        this.loading = false;
+        alert('Error: No hay producto seleccionado para actualizar');
+        return;
+      }
+
+      // Map form data to service format
+      const productToUpdate: any = {
+        id_producto: this.selectedProduct.id_producto,
+        nombre_producto: productData.name,
+        precio_producto: productData.price,
+        stock: productData.stock,
+        imagen_url_producto: productData.image || undefined,
+        // Note: sku_producto is missing from form - keeping existing value
+        sku_producto: this.selectedProduct.sku_producto,
+        // Note: category needs to be converted from string to number
+        id_producto_categoria: productData.category ? parseInt(productData.category, 10) : this.selectedProduct.productoCategoria?.id_producto_categoria || 0
+      };
+
+      // For update, we would need an update method in the service
+      // Since we only created createProduct, we'll show a message for now
+      alert('Funcionalidad de actualización pendiente de implementar en el servicio');
       this.loading = false;
-      alert('Producto creado exitosamente');
-    }, 1000);
-  }
-
-  updateProduct(productData: ProductoUpdateRequest): void {
-    // TODO: Implementar llamada al servicio
-    // this.productService.updateProduct(productData).subscribe({
-    //   next: (updatedProduct) => {
-    //     console.log('Producto actualizado:', updatedProduct);
-    //     this.loading = false;
-    //   },
-    //   error: (error) => {
-    //     console.error('Error actualizando producto:', error);
-    //     this.loading = false;
-    //   }
-    // });
-
-    // Simulación
-    setTimeout(() => {
-      console.log('Producto actualizado:', productData);
-      this.loading = false;
-      alert('Producto actualizado exitosamente');
-    }, 1000);
-  }
+    }
 
   deleteProduct(): void {
     if (!this.selectedProduct || !this.selectedProduct.id_producto) return;

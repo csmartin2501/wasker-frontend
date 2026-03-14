@@ -66,23 +66,47 @@
             <small class="text-muted">SKU: {{ product.sku_producto }}</small>
           </div>
 
-          <button
-            class="btn btn-sm w-100 mt-3"
-            [class.btn-success]="addedProductId !== product.id_producto"
-            [class.btn-outline-success]="addedProductId === product.id_producto"
-            [disabled]="(product.stock ?? 0) === 0"
-            (click)="onAddToCart(product, $event)"
-          >
-            {{ addedProductId === product.id_producto ? '✔ Agregado' : '🛒 Agregar al carrito' }}
-          </button>
+           <div class="d-flex flex-column gap-2">
+             <button
+               class="btn btn-sm w-100"
+               [class.btn-success]="addedProductId !== product.id_producto"
+               [class.btn-outline-success]="addedProductId === product.id_producto"
+               [disabled]="(product.stock ?? 0) === 0"
+               (click)="onAddToCart(product, $event)"
+             >
+               {{ addedProductId === product.id_producto ? '✔ Agregado' : '🛒 Agregar al carrito' }}
+             </button>
+             
+             <button
+               class="btn btn-outline-primary btn-sm w-100"
+               (click)="editProduct(product)"
+             >
+               ✏️ Editar
+             </button>
+             
+             <button
+               class="btn btn-outline-danger btn-sm w-100"
+               (click)="deleteProduct(product)"
+             >
+               🗑️ Eliminar
+             </button>
+           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Empty state -->
-  <div *ngIf="!loading && getFilteredProducts().length === 0" class="text-center py-5">
-    <div class="no-products-div">📦</div>
-    <p class="text-muted">{{ searchTerm ? 'No se encontraron productos que coincidan con la búsqueda' : 'No hay productos disponibles' }}</p>
-  </div>
+   <!-- Empty state -->
+   <div *ngIf="!loading && getFilteredProducts().length === 0" class="text-center py-5">
+     <div class="no-products-div">📦</div>
+     <p class="text-muted">{{ searchTerm ? 'No se encontraron productos que coincidan con la búsqueda' : 'No hay productos disponibles' }}</p>
+   </div>
+
+   <!-- Edit Product Modal -->
+   <app-edit-product-modal
+     [visible]="editModalVisible"
+     [product]="productToEdit"
+     (save)="onProductSaved($event)"
+     (close)="onModalClose()"
+   ></app-edit-product-modal>
 </div>
