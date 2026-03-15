@@ -28,7 +28,7 @@ export class ProductoService {
   }
 
   createProduct(product: ProductoCreate): Observable<Producto> {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('token');
     if (!token) {
       return throwError(() => new Error('Authentication required'));
     }
@@ -47,7 +47,7 @@ export class ProductoService {
   }
 
   updateProduct(id: number, product: Partial<ProductoCreate>): Observable<Producto> {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('token');
     if (!token) {
       return throwError(() => new Error('Authentication required'));
     }
@@ -66,7 +66,7 @@ export class ProductoService {
   }
 
   deleteProduct(id: number | undefined): Observable<void> {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('token');
     if (!token) {
       return throwError(() => new Error('Authentication required'));
     }
