@@ -106,17 +106,21 @@
        </div>
      </div>
 
-    <!-- Imagen URL -->
-    <div class="mb-4">
-      <label for="image" class="form-label">URL de Imagen</label>
-      <input
-        type="url"
-        id="image"
-        formControlName="image"
-        class="form-control"
-        placeholder="https://ejemplo.com/imagen.jpg (opcional)"
-      >
-    </div>
+<!-- Imagen -->
+     <div class="mb-4">
+       <label for="image" class="form-label">Imagen del Producto</label>
+       <input
+         type="file"
+         id="image"
+         formControlName="image"
+         class="form-control"
+         (change)="onImageSelected($event)"
+         accept="image/*"
+       >
+     </div>
+     <div *ngIf="productForm.get('image')?.value" class="text-center mb-3">
+       <img [src]="productForm.get('image')?.value" alt="Vista previa de la imagen" class="img-thumbnail" style="max-width: 200px;">
+     </div>
 
     <!-- Botones de acción -->
     <div class="d-flex justify-content-between align-items-center pt-3 border-top">

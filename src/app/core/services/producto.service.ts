@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Producto } from '../models/producto.interface';
 import { ProductoCategoria } from '../models/producto-categoria.interface';
@@ -101,5 +101,20 @@ export class ProductoService {
         return throwError(() => error);
       })
     );
+  }
+
+  /**
+   * Verifica si ya existe una imagen con el nombre especificado
+   * En una aplicación real, esto haría una petición al backend
+   * @param fileName Nombre del archivo a verificar
+   * @returns Observable que emite true si existe, false si no existe
+   */
+  checkIfImageExists(fileName: string): Observable<boolean> {
+    // En una implementación real, esto sería:
+    // return this.http.get<boolean>(`${this.apiUrl}/productos/imagenes/exists/${fileName}`);
+    
+    // Para este ejemplo, simulamos la respuesta
+    // En un caso real, se haría una llamada al backend
+    return of(false);
   }
 }
