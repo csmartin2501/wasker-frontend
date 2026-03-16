@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Producto, ProductoCreateRequest, ProductoUpdateRequest } from '../../../../core/models/producto.interface';
 import { ProductoCategoria } from '../../../../core/models/producto-categoria.interface';
-import { ProductService } from '../../../../services/product.service';
+import { ProductoService } from '../../../../core/services/producto.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -19,7 +19,7 @@ export class ProductFormComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder,
-    private productService: ProductService
+    private productService: ProductoService
   ) { }
 
   ngOnInit(): void {
@@ -32,17 +32,17 @@ export class ProductFormComponent implements OnInit, OnChanges {
       image: ['']
     });
     
-    // Load categories for the dropdown
-    this.productService.getCategories().subscribe({
-      next: (categories) => {
-        this.categories = categories;
-        console.log('Categories loaded:', categories);
-      },
-      error: (error) => {
-        console.error('Error loading categories:', error);
-        // Optionally show a message to the user
-      }
-    });
+     // Load categories for the dropdown
+     this.productService.getCategories().subscribe({
+       next: (categories: ProductoCategoria[]) => {
+         this.categories = categories;
+         console.log('Categories loaded:', categories);
+       },
+       error: (error: any) => {
+         console.error('Error loading categories:', error);
+         // Optionally show a message to the user
+       }
+     });
   }
 
   ngOnChanges(): void {
@@ -98,19 +98,19 @@ export class ProductFormComponent implements OnInit, OnChanges {
         id_producto_categoria: productData.category ? parseInt(productData.category, 10) : 0
       };
 
-      this.productService.createProduct(productToCreate).subscribe({
-        next: (createdProduct) => {
-          console.log('Producto creado:', createdProduct);
-          this.resetForm();
-          this.loading = false;
-          alert('Producto creado exitosamente');
-        },
-        error: (error) => {
-          console.error('Error creando producto:', error);
-          this.loading = false;
-          alert('Error al crear el producto: ' + error.message);
-        }
-      });
+       this.productService.createProduct(productToCreate).subscribe({
+         next: (createdProduct: any) => {
+           console.log('Producto creado:', createdProduct);
+           this.resetForm();
+           this.loading = false;
+           alert('Producto creado exitosamente');
+         },
+         error: (error: any) => {
+           console.error('Error creando producto:', error);
+           this.loading = false;
+           alert('Error al crear el producto: ' + error.message);
+         }
+       });
     }
 
     updateProduct(productData: ProductoUpdateRequest): void {

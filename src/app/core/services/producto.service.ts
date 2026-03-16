@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Producto } from '../models/producto.interface';
+import { ProductoCategoria } from '../models/producto-categoria.interface';
 import { environment } from '../../../environments/environment';
 
 export interface ProductoCreate {
@@ -78,6 +79,25 @@ export class ProductoService {
     return this.http.delete<void>(`${this.apiUrl}/productos/${id}`, { headers }).pipe(
       catchError((error) => {
         console.error('Error deleting product:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  getCategories(): Observable<ProductoCategoria[]> {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return throwError(() => new Error('Authentication required'));
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.get<ProductoCategoria[]>(`${this.apiUrl}/productos/categorias`, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error loading categories:', error);
         return throwError(() => error);
       })
     );
