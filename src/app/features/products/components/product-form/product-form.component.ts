@@ -17,6 +17,7 @@ export class ProductFormComponent implements OnInit, OnChanges {
   formMode: 'create' | 'update' = 'create';
   loading = false;
   categories: ProductoCategoria[] = [];
+  selectedFile: File | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -85,34 +86,39 @@ export class ProductFormComponent implements OnInit, OnChanges {
     }
   }
 
-     // Manejar selección de archivo de imagen
-     onImageSelected(event: any): void {
-       const file = event.target.files[0];
-       if (file) {
-         // Validar que no exista un archivo con el mismo nombre
-         this.validateImageName(file.name).then((exists) => {
-           if (exists) {
-             // Pedir al usuario que cambie el nombre
-             const newName = prompt(`Ya existe una imagen con el nombre "${file.name}". Por favor, ingrese un nuevo nombre para la imagen:`);
-             if (newName && newName.trim() !== '') {
-               // Crear un nuevo archivo con el nuevo nombre
-               const newFile = new File([file], newName.trim(), { type: file.type });
-               const objectUrl = URL.createObjectURL(newFile);
-               this.productForm.patchValue({ image: objectUrl });
-             } else {
+      // Manejar selección de archivo de imagen
+      onImageSelected(event: any): void {
+        const file = event.target.files[0];
+        if (file) {
+          // Validar que no exista un archivo con el mismo nombre (de forma síncrona para simplificar)
+          this.validateImageName(file.name).then((exists) => {
+            if (exists) {
+              // Pedir al usuario que cambie el nombre
+              const newName = prompt(`Ya existe una imagen con el nombre "${file.name}". Por favor, ingrese un nuevo nombre para la imagen:`);
+              if (newName && newName.trim() !== '') {
+                // Crear un nuevo archivo con el nuevo nombre
+                const newFile = new File([file], newName.trim(), { type: file.type });
+                const objectUrl = URL.createObjectURL(newFile);
+                this.productForm.patchValue({ image: objectUrl });
+                // Guardar el archivo original para subirlo más tarde
+                this.selectedFile = newFile;
+              } else {
                 // Si el usuario cancela o deja vacío, limpiar el campo
                 event.target.value = '';
                 this.productForm.patchValue({ image: null });
+                this.selectedFile = null;
                 Swal.fire('Información', 'Operación cancelada. No se seleccionó ninguna imagen.', 'info');
-             }
-           } else {
-             // No existe archivo con ese nombre, proceder normalmente
-             const objectUrl = URL.createObjectURL(file);
-             this.productForm.patchValue({ image: objectUrl });
-           }
-         });
-       }
-     }
+              }
+            } else {
+              // No existe archivo con ese nombre, proceder normalmente
+              const objectUrl = URL.createObjectURL(file);
+              this.productForm.patchValue({ image: objectUrl });
+              // Guardar el archivo original para subirlo más tarde
+              this.selectedFile = file;
+            }
+          });
+        }
+      }
 
      // Validar si ya existe una imagen con el mismo nombre
      private async validateImageName(fileName: string): Promise<boolean> {
@@ -125,37 +131,91 @@ export class ProductFormComponent implements OnInit, OnChanges {
      }
 
       createProduct(productData: ProductoCreateRequest): void {
-       // Map form data to service format
-       const productToCreate: any = {
-         nombre_producto: productData.name,
-         precio_producto: productData.price,
-         stock: productData.stock,
-         // Para archivos locales, guardamos solo el nombre del archivo
-         // En un caso real, el archivo se subiría al backend y se guardaría la ruta o URL
-         imagen_url_producto: productData.image ? this.extractFileName(productData.image) : undefined,
-         // Note: sku_producto is missing from form - this needs to be added to the form
-         // For now using a placeholder - THIS IS A TEMPORARY SOLUTION
-         sku_producto: `TEMP-${Date.now()}`,
-         // Note: category needs to be converted from string to number
-         id_producto_categoria: productData.category ? parseInt(productData.category, 10) : 0
-       };
+        // Si no hay archivo seleccionado, crear el producto directamente
+        if (!this.selectedFile) {
+          this.createProductWithoutImage(productData);
+          return;
+        }
 
-       console.log('Datos que se enviarán al servicio:', productToCreate);
-       
-       this.productService.createProduct(productToCreate).subscribe({
-         next: (createdProduct: any) => {
-           console.log('Producto creado:', createdProduct);
-           this.resetForm();
-           this.loading = false;
-           Swal.fire('Éxito', 'Producto creado exitosamente', 'success');
-         },
-         error: (error: any) => {
-           console.error('Error creando producto:', error);
-           this.loading = false;
-           Swal.fire('Error', 'Error al crear el producto: ' + error.message, 'error');
-         }
-       });
-     }
+        // Mostrar indicador de carga
+        this.loading = true;
+        
+        // Primero, subir la imagen
+        this.productService.uploadImage(this.selectedFile).subscribe({
+          next: (imageUrl: string) => {
+            console.log('Imagen subida exitosamente:', imageUrl);
+            
+            // Mapear datos del formulario al formato del servicio
+            const productToCreate: any = {
+              nombre_producto: productData.name,
+              precio_producto: productData.price,
+              stock: productData.stock,
+              // Guardar la URL de la imagen subida
+              imagen_url_producto: imageUrl,
+              // Note: sku_producto is missing from form - this needs to be added to the form
+              // For now using a placeholder - THIS IS A TEMPORARY SOLUTION
+              sku_producto: `TEMP-${Date.now()}`,
+              // Note: category needs to be converted from string to number
+              id_producto_categoria: productData.category ? parseInt(productData.category, 10) : 0
+            };
+
+            console.log('Datos que se enviarán al servicio:', productToCreate);
+            
+            // Luego, crear el producto con la URL de la imagen
+            this.productService.createProduct(productToCreate).subscribe({
+              next: (createdProduct: any) => {
+                console.log('Producto creado:', createdProduct);
+                this.resetForm();
+                this.loading = false;
+                Swal.fire('Éxito', 'Producto creado exitosamente', 'success');
+              },
+              error: (error: any) => {
+                console.error('Error creando producto:', error);
+                this.loading = false;
+                Swal.fire('Error', 'Error al crear el producto: ' + error.message, 'error');
+              }
+            });
+          },
+          error: (error: any) => {
+            console.error('Error subiendo imagen:', error);
+            this.loading = false;
+            Swal.fire('Error', 'Error al subir la imagen: ' + error.message, 'error');
+          }
+        });
+      }
+
+      // Método auxiliar para crear producto sin imagen
+      private createProductWithoutImage(productData: ProductoCreateRequest): void {
+        // Mapear datos del formulario al formato del servicio
+        const productToCreate: any = {
+          nombre_producto: productData.name,
+          precio_producto: productData.price,
+          stock: productData.stock,
+          // No hay imagen
+          imagen_url_producto: undefined,
+          // Note: sku_producto is missing from form - this needs to be added to the form
+          // For now using a placeholder - THIS IS A TEMPORARY SOLUTION
+          sku_producto: `TEMP-${Date.now()}`,
+          // Note: category needs to be converted from string to number
+          id_producto_categoria: productData.category ? parseInt(productData.category, 10) : 0
+        };
+
+        console.log('Datos que se enviarán al servicio (sin imagen):', productToCreate);
+        
+        this.productService.createProduct(productToCreate).subscribe({
+          next: (createdProduct: any) => {
+            console.log('Producto creado:', createdProduct);
+            this.resetForm();
+            this.loading = false;
+            Swal.fire('Éxito', 'Producto creado exitosamente', 'success');
+          },
+          error: (error: any) => {
+            console.error('Error creando producto:', error);
+            this.loading = false;
+            Swal.fire('Error', 'Error al crear el producto: ' + error.message, 'error');
+          }
+        });
+      }
 
      // Extraer el nombre del archivo de una URL de objeto
      private extractFileName(url: string): string {

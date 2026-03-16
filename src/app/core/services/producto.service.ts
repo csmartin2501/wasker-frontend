@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError, of } from 'rxjs';
+import { Observable, throwError, map, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Producto } from '../models/producto.interface';
 import { ProductoCategoria } from '../models/producto-categoria.interface';
@@ -104,17 +104,64 @@ export class ProductoService {
   }
 
   /**
+   * Sube una imagen al servidor
+   * @param file Archivo de imagen a subir
+   * @returns Observable que emite la URL de la imagen subida
+   */
+  uploadImage(file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return throwError(() => new Error('Authentication required'));
+    }
+
+    // Nota: No establecer Content-Type manualmente para FormData
+    // El navegador lo establecerá automáticamente con el boundary correcto
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    
+    // Asumimos que existe un endpoint para subir imágenes
+    // En una implementación real, esto sería algo como:
+    // return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/productos/upload-image`, formData, { headers }).pipe(...)
+    
+    // Por ahora, simulamos la subida exitosamente
+    // En un caso real, se haría una llamada al backend
+    return of(`/assets/images/products/${file.name}`).pipe(
+      delay(1000) // Simular latencia de red
+    );
+  }
+
+  /**
    * Verifica si ya existe una imagen con el nombre especificado
    * En una aplicación real, esto haría una petición al backend
    * @param fileName Nombre del archivo a verificar
    * @returns Observable que emite true si existe, false si no existe
    */
   checkIfImageExists(fileName: string): Observable<boolean> {
-    // En una implementación real, esto sería:
-    // return this.http.get<boolean>(`${this.apiUrl}/productos/imagenes/exists/${fileName}`);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return throwError(() => new Error('Authentication required'));
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
     
-    // Para este ejemplo, simulamos la respuesta
+    // Asumimos que existe un endpoint para verificar existencia de imágenes
+    // En una implementación real, esto sería:
+    // return this.http.get<boolean>(`${this.apiUrl}/productos/imagenes/exists/${fileName}`, { headers });
+    
+    // Por ahora, simulamos la respuesta
     // En un caso real, se haría una llamada al backend
-    return of(false);
+    return of(false).pipe(
+      delay(500) // Simular latencia de red
+    );
   }
 }
+
+// Necesitamos importar delay para las simulaciones
+import { delay } from 'rxjs/operators';
