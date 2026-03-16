@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError, map, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, delay } from 'rxjs/operators';
 import { Producto } from '../models/producto.interface';
 import { ProductoCategoria } from '../models/producto-categoria.interface';
 import { environment } from '../../../environments/environment';
@@ -104,20 +104,20 @@ export class ProductoService {
   }
 
   /**
-   * Sube una imagen al servidor
+   * Sube una imagen al servidor usando FormData
    * @param file Archivo de imagen a subir
-   * @returns Observable que emite la URL de la imagen subida
+   * @returns Observable que emite la respuesta del backend (asumiendo que devuelve la URL de la imagen)
    */
   uploadImage(file: File): Observable<string> {
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('image', file, file.name);
     
     const token = localStorage.getItem('token');
     if (!token) {
       return throwError(() => new Error('Authentication required'));
     }
 
-    // Nota: No establecer Content-Type manualmente para FormData
+    // No establecer Content-Type manualmente para FormData
     // El navegador lo establecerá automáticamente con el boundary correcto
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
@@ -125,10 +125,15 @@ export class ProductoService {
     
     // Asumimos que existe un endpoint para subir imágenes
     // En una implementación real, esto sería algo como:
-    // return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/productos/upload-image`, formData, { headers }).pipe(...)
+    // return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/productos/upload-image`, formData, { headers }).pipe(
+    //   map(response => response.imageUrl),
+    //   catchError(error => {
+    //     console.error('Error uploading image:', error);
+    //     return throwError(() => error);
+    //   })
+    // );
     
-    // Por ahora, simulamos la subida exitosamente
-    // En un caso real, se haría una llamada al backend
+    // Por ahora, simulamos la subida exitosamente (se reemplazará con la llamada real cuando el backend esté listo)
     return of(`/assets/images/products/${file.name}`).pipe(
       delay(1000) // Simular latencia de red
     );
@@ -155,13 +160,9 @@ export class ProductoService {
     // En una implementación real, esto sería:
     // return this.http.get<boolean>(`${this.apiUrl}/productos/imagenes/exists/${fileName}`, { headers });
     
-    // Por ahora, simulamos la respuesta
-    // En un caso real, se haría una llamada al backend
+    // Por ahora, simulamos la respuesta (se reemplazará con la llamada real cuando el backend esté listo)
     return of(false).pipe(
       delay(500) // Simular latencia de red
     );
   }
 }
-
-// Necesitamos importar delay para las simulaciones
-import { delay } from 'rxjs/operators';
