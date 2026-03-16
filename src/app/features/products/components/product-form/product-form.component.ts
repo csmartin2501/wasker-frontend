@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Producto, ProductoCreateRequest, ProductoUpdateRequest } from '../../../../core/models/producto.interface';
+import { ProductoCategoria } from '../../../../core/models/producto-categoria.interface';
 import { ProductService } from '../../../../services/product.service';
 import { Observable } from 'rxjs';
 
@@ -14,6 +15,7 @@ export class ProductFormComponent implements OnInit, OnChanges {
   productForm!: FormGroup;
   formMode: 'create' | 'update' = 'create';
   loading = false;
+  categories: ProductoCategoria[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -28,6 +30,18 @@ export class ProductFormComponent implements OnInit, OnChanges {
       stock: [0, [Validators.required, Validators.min(0)]],
       category: [''],
       image: ['']
+    });
+    
+    // Load categories for the dropdown
+    this.productService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        console.log('Categories loaded:', categories);
+      },
+      error: (error) => {
+        console.error('Error loading categories:', error);
+        // Optionally show a message to the user
+      }
     });
   }
 

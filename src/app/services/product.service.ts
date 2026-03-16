@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { ProductoCategoria } from '../core/models/producto-categoria.interface';
 
 export interface ProductoCreate {
   sku_producto: string;
@@ -56,6 +57,33 @@ export class ProductService {
     });
 
     return this.http.post<ProductoResponse>(this.baseUrl, cleanPayload, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        let errorMsg = error.message || 'HTTP error';
+        if (error.error instanceof ErrorEvent) {
+          errorMsg = error.error.message;
+        } else {
+          const backendMsg = error.error?.detail || error.error?.message;
+          if (backendMsg) {
+            errorMsg = `${errorMsg}: ${backendMsg}`;
+          }
+        }
+        return throwError(() => new Error(errorMsg));
+      })
+    );
+  }
+
+  getCategories(): Observable<ProductoCategoria[]> {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      return throwError(() => new Error('Authentication required'));
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.get<ProductoCategoria[]>(`${this.baseUrl}/categorias`, { headers }).pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMsg = error.message || 'HTTP error';
         if (error.error instanceof ErrorEvent) {

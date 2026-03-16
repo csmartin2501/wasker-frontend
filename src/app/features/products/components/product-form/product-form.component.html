@@ -87,17 +87,24 @@
       </div>
     </div>
 
-    <!-- Categoría -->
-    <div class="mb-3">
-      <label for="category" class="form-label">Categoría</label>
-      <input
-        type="text"
-        id="category"
-        formControlName="category"
-        class="form-control"
-        placeholder="Categoría del producto (opcional)"
-      >
-    </div>
+<!-- Categoría -->
+     <div class="mb-3">
+       <label for="category" class="form-label">Categoría</label>
+       <select
+         id="category"
+         formControlName="category"
+         class="form-control"
+         [class.is-invalid]="isFieldInvalid('category')"
+       >
+         <option value="">Seleccione una categoría</option>
+         <option *ngFor="let category of categories" [value]="category.id_producto_categoria">
+           {{ category.categoria_producto }}
+         </option>
+       </select>
+       <div class="invalid-feedback" *ngIf="isFieldInvalid('category')">
+         {{ getFieldError('category') }}
+       </div>
+     </div>
 
     <!-- Imagen URL -->
     <div class="mb-4">
