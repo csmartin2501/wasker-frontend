@@ -3,6 +3,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CartItem } from '../models/cart.interface';
 import { Producto } from '../models/producto.interface';
+import { SalesService } from './sales.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +33,11 @@ export class CartService {
   get totalItems(): number {
     return this.items.reduce((acc, item) => acc + item.cantidad, 0);
   }
+
+  constructor(
+    private salesService: SalesService,
+    private router: Router
+  ) {}
 
   addItem(producto: Producto, cantidad: number = 1): void {
     const current = this.items;
@@ -76,5 +83,41 @@ export class CartService {
 
   clearCart(): void {
     this.itemsSubject.next([]);
+  }
+
+  // Confirm purchase and create sale
+  confirmPurchase(id_cliente: number, id_vendedor: number, id_tipo_pago: number): Observable<boolean> {
+    // Convert cart items to venta format
+    const cartItems = this.items;
+    if (cartItems.length === 0) {
+      return new Observable<boolean>(observer => {
+        observer.next(false);
+        observer.complete();
+      });
+    }
+
+    const items = cartItems.map(item => ({
+      id_producto: item.producto.id_producto ?? 0,
+      cantidad: item.cantidad,
+      precio_unitario: item.producto.precio_producto ?? 0
+    }));
+
+    const cartData = {
+      id_cliente,
+      id_vendedor,
+      id_tipo_pago,
+      items
+    };
+
+    // Clear cart and navigate to sales on success
+    return this.salesService.createSaleFromCart(cartData).pipe(
+      map(response => {
+        // Clear cart after successful purchase
+        this.clearCart();
+        // Navigate to sales history
+        this.router.navigate(['/sales']);
+        return true;
+      })
+    );
   }
 }

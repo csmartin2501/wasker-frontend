@@ -116,7 +116,11 @@
                 </span>
               </div>
 
-              <button class="btn btn-success w-100">
+              <button
+                class="btn btn-success w-100"
+                (click)="onConfirmPurchase()"
+                [disabled]="(totalItems$ | async) === 0"
+              >
                 ✅ Confirmar pedido
               </button>
 

@@ -22,6 +22,10 @@ const routes: Routes = [
         loadChildren: () => import('./features/cart/cart.module').then(m => m.CartModule)
       },
       {
+        path: 'sales',
+        loadChildren: () => import('./features/sales/sales.module').then(m => m.SalesModule)
+      },
+      {
         path: '',
         redirectTo: 'products',
         pathMatch: 'full'

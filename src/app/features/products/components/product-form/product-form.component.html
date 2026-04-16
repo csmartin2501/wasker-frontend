@@ -1,12 +1,7 @@
 <div class="container-fluid">
   <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
     <h2 class="mb-0">{{ formMode === 'create' ? 'Agregar Producto' : 'Editar Producto' }}</h2>
-    <button 
-      *ngIf="formMode === 'update'"
-      type="button" 
-      class="btn btn-success btn-sm"
-      (click)="resetForm()"
-    >
+    <button *ngIf="formMode === 'update'" type="button" class="btn btn-success btn-sm" (click)="resetForm()">
       <i class="bi bi-plus">➕</i> Nuevo Producto
     </button>
   </div>
@@ -15,14 +10,8 @@
     <!-- Nombre -->
     <div class="mb-3">
       <label for="name" class="form-label">Nombre del Producto *</label>
-      <input
-        type="text"
-        id="name"
-        formControlName="name"
-        class="form-control"
-        [class.is-invalid]="isFieldInvalid('name')"
-        placeholder="Ingrese el nombre del producto"
-      >
+      <input type="text" id="name" formControlName="name" class="form-control"
+        [class.is-invalid]="isFieldInvalid('name')" placeholder="Ingrese el nombre del producto">
       <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
         {{ getFieldError('name') }}
       </div>
@@ -31,14 +20,9 @@
     <!-- Descripción -->
     <div class="mb-3">
       <label for="description" class="form-label">Descripción</label>
-      <textarea
-        id="description"
-        formControlName="description"
-        class="form-control"
-        [class.is-invalid]="isFieldInvalid('description')"
-        placeholder="Descripción del producto (opcional)"
-        rows="3"
-      ></textarea>
+      <textarea id="description" formControlName="description" class="form-control"
+        [class.is-invalid]="isFieldInvalid('description')" placeholder="Descripción del producto (opcional)"
+        rows="3"></textarea>
       <div class="invalid-feedback" *ngIf="isFieldInvalid('description')">
         {{ getFieldError('description') }}
       </div>
@@ -51,16 +35,8 @@
           <label for="price" class="form-label">Precio *</label>
           <div class="input-group">
             <span class="input-group-text">$</span>
-            <input
-              type="number"
-              id="price"
-              formControlName="price"
-              class="form-control"
-              [class.is-invalid]="isFieldInvalid('price')"
-              placeholder="0.00"
-              step="0.01"
-              min="0"
-            >
+            <input type="number" id="price" formControlName="price" class="form-control"
+              [class.is-invalid]="isFieldInvalid('price')" placeholder="0.00" step="0.01" min="0">
           </div>
           <div class="invalid-feedback" *ngIf="isFieldInvalid('price')">
             {{ getFieldError('price') }}
@@ -71,15 +47,8 @@
       <div class="col-md-6">
         <div class="mb-3">
           <label for="stock" class="form-label">Stock *</label>
-          <input
-            type="number"
-            id="stock"
-            formControlName="stock"
-            class="form-control"
-            [class.is-invalid]="isFieldInvalid('stock')"
-            placeholder="0"
-            min="0"
-          >
+          <input type="number" id="stock" formControlName="stock" class="form-control"
+            [class.is-invalid]="isFieldInvalid('stock')" placeholder="0" min="0">
           <div class="invalid-feedback" *ngIf="isFieldInvalid('stock')">
             {{ getFieldError('stock') }}
           </div>
@@ -87,70 +56,47 @@
       </div>
     </div>
 
-<!-- Categoría -->
-     <div class="mb-3">
-       <label for="category" class="form-label">Categoría</label>
-       <select
-         id="category"
-         formControlName="category"
-         class="form-control"
-         [class.is-invalid]="isFieldInvalid('category')"
-       >
-         <option value="">Seleccione una categoría</option>
-         <option *ngFor="let category of categories" [value]="category.id_producto_categoria">
-           {{ category.categoria_producto }}
-         </option>
-       </select>
-       <div class="invalid-feedback" *ngIf="isFieldInvalid('category')">
-         {{ getFieldError('category') }}
-       </div>
-     </div>
+    <!-- Categoría -->
+    <div class="mb-3">
+      <label for="category" class="form-label">Categoría</label>
+      <select id="category" formControlName="category" class="form-control"
+        [class.is-invalid]="isFieldInvalid('category')">
+        <option value="">Seleccione una categoría</option>
+        <option *ngFor="let category of categories" [value]="category.id_producto_categoria">
+          {{ category.categoria_producto }}
+        </option>
+      </select>
+      <div class="invalid-feedback" *ngIf="isFieldInvalid('category')">
+        {{ getFieldError('category') }}
+      </div>
+    </div>
 
-<!-- Imagen -->
-     <div class="mb-4">
-       <label for="image" class="form-label">Imagen del Producto</label>
-       <input
-         type="file"
-         id="image"
-         formControlName="image"
-         class="form-control"
-         (change)="onImageSelected($event)"
-         accept="image/*"
-       >
-     </div>
-     <div *ngIf="productForm.get('image')?.value" class="text-center mb-3">
-       <img [src]="productForm.get('image')?.value" alt="Vista previa de la imagen" class="img-thumbnail" style="max-width: 200px;">
-     </div>
+    <!-- Imagen -->
+    <div class="mb-4">
+      <label for="image" class="form-label">Imagen del Producto</label>
+      <input type="file" id="image" formControlName="image" class="form-control" (change)="onImageSelected($event)"
+        accept="image/*">
+    </div>
+    <div *ngIf="productForm.get('image')?.value" class="text-center mb-3">
+      <img [src]="productForm.get('image')?.value" alt="Vista previa de la imagen" class="img-thumbnail"
+        style="max-width: 200px;">
+    </div>
 
     <!-- Botones de acción -->
     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
       <div class="d-flex gap-2">
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="loading || productForm.invalid"
-        >
+        <button type="submit" class="btn btn-primary" [disabled]="loading || productForm.invalid">
           <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
           {{ loading ? 'Procesando...' : (formMode === 'create' ? '✅ Crear Producto' : '📝 Actualizar Producto') }}
         </button>
 
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          (click)="resetForm()"
-          [disabled]="loading"
-        >
+        <button type="button" class="btn btn-outline-secondary" (click)="resetForm()" [disabled]="loading">
           🔄 Limpiar
         </button>
       </div>
 
       <div *ngIf="formMode === 'update'">
-        <button
-          type="button"
-          class="btn btn-outline-danger"
-          (click)="deleteProduct()"
-          [disabled]="loading"
-        >
+        <button type="button" class="btn btn-outline-danger" (click)="deleteProduct()" [disabled]="loading">
           <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
           {{ loading ? 'Eliminando...' : '🗑️ Eliminar' }}
         </button>

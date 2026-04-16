@@ -1,0 +1,149 @@
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">👁️ Detalle de Venta</h4>
+    <a
+      routerLink="/sales"
+      class="btn btn-outline-secondary btn-sm"
+    >
+      ← Volver al Historial
+    </a>
+  </div>
+
+  <ng-container *ngIf="loading$ | async as loading">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-3">Cargando detalle de venta...</p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="error$ | async as error">
+    <!-- Error State -->
+    <div *ngIf="error" class="alert alert-danger text-center py-4 mb-4">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      {{ error }}
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="venta$ | async as venta">
+
+    <!-- No sale found -->
+    <div *ngIf="!venta" class="text-center py-5">
+      <div class="display-1">❓</div>
+      <h5 class="text-muted mt-3">Venta no encontrada</h5>
+      <p class="text-muted">La venta solicitada no existe o fue eliminada.</p>
+      <a routerLink="/sales" class="btn btn-primary mt-2">
+        ← Volver al Historial
+      </a>
+    </div>
+
+    <!-- Sale details -->
+    <div *ngIf="venta" class="row">
+      <div class="col-md-8">
+        <!-- Sale Header -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Venta #{{ venta.id_venta }}</h5>
+            <p class="card-text">
+              <span class="badge bg-secondary">Fecha: {{ venta.fecha_venta | date:'medium' }}</span>
+              <span class="badge bg-info ms-2">Cliente: {{ venta.cliente?.nombre_persona || 'N/A' }}</span>
+              <span class="badge bg-success ms-2">Vendedor: {{ venta.vendedor?.nombre_persona || 'N/A' }}</span>
+              <span class="badge bg-warning text-dark ms-2">Pago: {{ venta.tipoPago?.tipo_pago || 'N/A' }}</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mb-0">Productos Vendidos</h6>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Producto</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-end">Precio Unitario</th>
+                    <th class="text-end">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let detalle of venta.detalle; let i = index"
+                  >
+                    <td>{{ i + 1 }}</td>
+                    <td>
+                      <div class="fw-semibold">{{ detalle.producto?.nombre_producto }}</div>
+                      <small class="text-muted">SKU: {{ detalle.producto?.sku_producto }}</small>
+                    </td>
+                    <td class="text-center">{{ detalle.cantidad }}</td>
+                    <td class="text-end">${{ detalle.precio_unitario | number:'1.2-2' }}</td>
+                    <td class="text-end fw-bold">
+                      ${{ (detalle.cantidad * detalle.precio_unitario) | number:'1.2-2' }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <!-- Sale Summary -->
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title mb-4">Resumen de la Venta</h5>
+
+            <div class="mb-3">
+              <label class="form-label">Total Productos:</label>
+              <p class="form-control-plaintext fs-5">{{ venta.totalItems }}</p>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Subtotal:</label>
+              <p class="form-control-plaintext fs-5">
+                ${{ venta.subtotal | number:'1.2-2' }}
+              </p>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Impuestos (0%):</label>
+              <p class="form-control-plaintext fs-5">$0.00</p>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between mb-3">
+              <label class="form-label fw-bold">TOTAL:</label>
+              <p class="form-control-plaintext fs-4 fw-bold text-success">
+                ${{ venta.total | number:'1.2-2' }}
+              </p>
+            </div>
+
+            <div class="d-flex justify-content-between mb-3">
+              <label class="form-label">Método de Pago:</label>
+              <p class="form-control-plaintext fs-5">
+                {{ venta.tipoPago?.tipo_pago || 'N/A' }}
+              </p>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Fecha de Venta:</label>
+              <p class="form-control-plaintext fs-5">
+                {{ venta.fecha_venta | date:'medium' }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>

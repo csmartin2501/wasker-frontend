@@ -48,7 +48,13 @@
           </div>
           
           <div class="d-flex justify-content-center my-3">
-            <img class="img-fluid w-50" src="assets/images/products/{{ product.imagen_url_producto }}" alt="{{ product.nombre_producto }}" title="{{ product.nombre_producto }}">
+            <img
+              class="img-fluid w-50"
+              [src]="getBackendImageUrl(product.imagen_url_producto)"
+              [alt]="product.nombre_producto"
+              [title]="product.nombre_producto"
+              (error)="handleImageError($event)"
+            >
           </div>
           <!-- <p class="card-text text-muted small mb-2" *ngIf="product.fecha_creacion">
             {{ product.fecha_creacion }}

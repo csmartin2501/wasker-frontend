@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
-import { catchError, delay } from 'rxjs/operators';
+import { catchError, delay, map } from 'rxjs/operators';
 import { Producto } from '../models/producto.interface';
 import { ProductoCategoria } from '../models/producto-categoria.interface';
 import { environment } from '../../../environments/environment';
@@ -125,18 +125,14 @@ export class ProductoService {
     
     // Asumimos que existe un endpoint para subir imágenes
     // En una implementación real, esto sería algo como:
-    // return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/productos/upload-image`, formData, { headers }).pipe(
-    //   map(response => response.imageUrl),
-    //   catchError(error => {
-    //     console.error('Error uploading image:', error);
-    //     return throwError(() => error);
-    //   })
-    // );
+    return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/productos/upload-image`, formData, { headers }).pipe(
+      map(response => response.imageUrl),
+        catchError(error => {
+         console.error('Error uploading image:', error);
+         return throwError(() => error);
+       })
+      );
     
-    // Por ahora, simulamos la subida exitosamente (se reemplazará con la llamada real cuando el backend esté listo)
-    return of(`/assets/images/products/${file.name}`).pipe(
-      delay(1000) // Simular latencia de red
-    );
   }
 
   /**
@@ -164,5 +160,25 @@ export class ProductoService {
     return of(false).pipe(
       delay(500) // Simular latencia de red
     );
+  }
+
+  getBackendImageUrl(fileName: string | null | undefined): Observable<string> {
+
+    if (!fileName) {
+      return of('assets/images/no-image.png')
+    }
+  
+    return this.http
+      .get<string>(`${this.apiUrl}/images/${fileName}`)
+      .pipe(
+        map(resp => {
+          // si backend devuelve solo nombre
+          if (!resp.startsWith('http')) {
+            return `${this.apiUrl}/images/${resp}`
+          }
+          return resp
+        }),
+        catchError(() => of('assets/images/no-image.png'))
+      )
   }
 }

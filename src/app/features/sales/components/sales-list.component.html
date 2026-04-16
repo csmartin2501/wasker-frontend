@@ -1,0 +1,84 @@
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">📋 Historial de Ventas</h4>
+    <button
+      class="btn btn-outline-primary btn-sm"
+      routerLink="/cart/detail"
+    >
+      🛒 Ir al Carrito
+    </button>
+  </div>
+
+  <ng-container *ngIf="loading$ | async as loading">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-3">Cargando historial de ventas...</p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="error$ | async as error">
+    <!-- Error State -->
+    <div *ngIf="error" class="alert alert-danger text-center py-4 mb-4">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      {{ error }}
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="ventas$ | async as ventas">
+
+    <!-- No sales message -->
+    <div *ngIf="ventas.length === 0" class="text-center py-5">
+      <div class="display-1">📋</div>
+      <h5 class="text-muted mt-3">No hay ventas registradas</h5>
+      <p class="text-muted">Las ventas realizadas aparecerán aquí.</p>
+    </div>
+
+    <!-- Sales table -->
+    <div *ngIf="ventas.length > 0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>Vendedor</th>
+              <th>Tipo de Pago</th>
+              <th>Total</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let venta of ventas; let i = index; trackBy: trackById"
+              [class.table-success]="i === 0"
+            >
+              <td>{{ i + 1 }}</td>
+              <td>{{ venta.fecha_venta | date:'medium' }}</td>
+              <td>{{ venta.cliente?.nombre_persona || 'N/A' }}</td>
+              <td>{{ venta.vendedor?.nombre_persona || 'N/A' }}</td>
+              <td>{{ venta.tipoPago?.tipo_pago || 'N/A' }}</td>
+              <td class="text-end fw-bold">
+                ${{ venta.total | number:'1.2-2' }}
+              </td>
+              <td class="text-center">
+                <button
+                  class="btn btn-sm btn-outline-primary me-1"
+                  [routerLink]="['/sales/detail', venta.id_venta]"
+                  title="Ver detalles"
+                >
+                  👁️
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </ng-container>
+</div>
