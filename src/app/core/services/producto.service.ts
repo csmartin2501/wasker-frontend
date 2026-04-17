@@ -25,7 +25,7 @@ export class ProductoService {
   constructor(private http: HttpClient) { }
 
   getListProducts(): Observable<Producto[]> {
-    return this.http.get<Producto[]>(`${this.apiUrl}/productos/GetListProducts`);
+    return this.http.get<Producto[]>(`${this.apiUrl}/productos/`);
   }
 
   createProduct(product: ProductoCreate): Observable<Producto> {
@@ -169,7 +169,7 @@ export class ProductoService {
     }
   
     return this.http
-      .get<string>(`${this.apiUrl}/images/${fileName}`)
+      .get<string>(`${this.apiUrl}/productos/images/${fileName}`)
       .pipe(
         map(resp => {
           // si backend devuelve solo nombre

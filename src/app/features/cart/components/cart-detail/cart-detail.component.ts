@@ -1,7 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
 import { CartItem } from '../../../../core/models/cart.interface';
 import { CartService } from '../../../../core/services/cart.service';
+import { ClienteService } from '../../../../core/services/cliente.service';
+import { Cliente } from '../../../../core/models/cliente.interface';
+import { environment } from '../../../../../environments/environment';
+
+interface TipoPago {
+  id_tipo_pago: number;
+  tipo_pago: string;
+}
 
 @Component({
   selector: 'app-cart-detail',
@@ -13,12 +23,40 @@ export class CartDetailComponent implements OnInit {
   total$!: Observable<number>;
   totalItems$!: Observable<number>;
 
-  constructor(private cartService: CartService) {}
+  clientes: Cliente[] = [];
+  tiposPago: TipoPago[] = [];
+  selectedClienteId: number | null = null;
+  selectedTipoPagoId: number | null = null;
+  procesando = false;
+
+  constructor(
+    private cartService: CartService,
+    private clienteService: ClienteService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.items$ = this.cartService.items$;
     this.total$ = this.cartService.total$;
     this.totalItems$ = this.cartService.totalItems$;
+    this.loadClientes();
+    this.loadTiposPago();
+  }
+
+  loadClientes(): void {
+    this.clienteService.getClientes().subscribe({
+      next: (data) => this.clientes = data,
+      error: (err) => console.error('Error cargando clientes', err)
+    });
+  }
+
+  loadTiposPago(): void {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    this.http.get<TipoPago[]>(`${environment.apiUrl}/tipos-pago/`, { headers }).subscribe({
+      next: (data) => this.tiposPago = data,
+      error: (err) => console.error('Error cargando tipos de pago', err)
+    });
   }
 
   onChangeCantidad(idProducto: number, event: Event): void {
@@ -34,22 +72,23 @@ export class CartDetailComponent implements OnInit {
     this.cartService.clearCart();
   }
 
-  // Confirm purchase - using default values for now, should be replaced with actual client/seller/payment selection
-  onConfirmPurchase(): void {
-    // These would ideally come from a user selection or profile
-    const id_cliente = 1; // Default client ID
-    const id_vendedor = 1; // Default seller ID
-    const id_tipo_pago = 1; // Default payment type (efectivo)
+  get canConfirm(): boolean {
+    return !!this.selectedClienteId && !!this.selectedTipoPagoId;
+  }
 
-    this.cartService.confirmPurchase(id_cliente, id_vendedor, id_tipo_pago).subscribe({
-      next: (success) => {
-        if (success) {
-          // Success is handled in the service (navigation to sales)
-        }
-      },
+  onConfirmPurchase(): void {
+    if (!this.selectedClienteId || !this.selectedTipoPagoId) {
+      Swal.fire('Atención', 'Debes seleccionar un cliente y tipo de pago.', 'warning');
+      return;
+    }
+
+    this.procesando = true;
+    this.cartService.confirmPurchase(this.selectedClienteId, 1, this.selectedTipoPagoId).subscribe({
+      next: () => { this.procesando = false; },
       error: (error) => {
-        console.error('Error confirming purchase:', error);
-        alert('Error al procesar la compra. Por favor intente nuevamente.');
+        this.procesando = false;
+        const msg = error.userMessage || error.error?.detail || error.error?.message || 'Error al procesar la venta.';
+        Swal.fire('Error', msg, 'error');
       }
     });
   }

@@ -54,7 +54,7 @@ export class EditProductModalComponent {
       this.stockProducto = this.product.stock || 0;
       this.skuProducto = this.product.sku_producto || '';
       this.imagenUrlProducto = this.product.imagen_url_producto || '';
-      this.categoriaId = this.product.productoCategoria?.id_producto_categoria || 0;
+      this.categoriaId = this.product.id_producto_categoria || this.product.productoCategoria?.id_producto_categoria || 0;
     } else {
       // Resetear el formulario si no hay producto
       this.nombreProducto = '';
@@ -72,20 +72,16 @@ export class EditProductModalComponent {
       return;
     }
 
-    // Actualizar el producto con los valores del formulario
-    this.product.nombre_producto = this.nombreProducto;
-    this.product.precio_producto = this.precioProducto;
-    this.product.stock = this.stockProducto;
-    this.product.sku_producto = this.skuProducto;
-    this.product.imagen_url_producto = this.imagenUrlProducto;
-    
-    // Actualizar la categoría si existe
-    if (this.product.productoCategoria) {
-      this.product.productoCategoria.id_producto_categoria = this.categoriaId;
-    }
+    const payload = {
+      sku_producto: this.skuProducto,
+      nombre_producto: this.nombreProducto,
+      precio_producto: this.precioProducto,
+      stock: this.stockProducto,
+      imagen_url_producto: this.imagenUrlProducto || undefined,
+      id_producto_categoria: this.categoriaId,
+    };
 
-    // Llamar al servicio para actualizar el producto
-    this.productoService.updateProduct(this.product.id_producto, this.product).subscribe({
+    this.productoService.updateProduct(this.product.id_producto, payload).subscribe({
       next: (updatedProduct) => {
         Swal.fire('Actualizado', 'Producto actualizado exitosamente', 'success');
         this.save.emit(updatedProduct);
@@ -93,7 +89,8 @@ export class EditProductModalComponent {
       },
       error: (error) => {
         console.error('Error updating product:', error);
-        Swal.fire('Error', 'Error al actualizar el producto: ' + (error.message || 'Error desconocido'), 'error');
+        const msg = error.error?.detail || error.error?.message || 'Error desconocido';
+        Swal.fire('Error', 'Error al actualizar el producto: ' + msg, 'error');
       }
     });
   }

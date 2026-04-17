@@ -32,9 +32,13 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" href="#">
-            👤 Usuario
-          </a>
+          <span class="nav-link text-light">
+            👤 {{ authService.getUserPayload()?.username || 'Usuario' }}
+            <span *ngIf="authService.isAdmin()" class="badge bg-warning text-dark ms-1">Admin</span>
+          </span>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-link nav-link text-light" (click)="logout()">Salir</button>
         </li>
       </ul>
     </div>
@@ -68,6 +72,28 @@
               routerLinkActive="active"
             >
               <span><span class="me-2">📋</span> Historial de Ventas</span>
+            </a>
+          </li>
+
+          <!-- Clientes (solo admin) -->
+          <li class="nav-item-main nav-item" *ngIf="authService.isAdmin()">
+            <a
+              class="nav-link text-light px-3 py-2 rounded d-flex align-items-center"
+              routerLink="/clients/list"
+              routerLinkActive="active"
+            >
+              <span><span class="me-2">👥</span> Clientes</span>
+            </a>
+          </li>
+
+          <!-- Reportes (solo admin) -->
+          <li class="nav-item-main nav-item" *ngIf="authService.isAdmin()">
+            <a
+              class="nav-link text-light px-3 py-2 rounded d-flex align-items-center"
+              routerLink="/reports"
+              routerLinkActive="active"
+            >
+              <span><span class="me-2">📊</span> Reportes</span>
             </a>
           </li>
 

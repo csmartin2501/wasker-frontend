@@ -8,6 +8,7 @@ export interface Producto {
   stock?: number;
   fecha_creacion?: string;
   imagen_url_producto?: string;
+  id_producto_categoria?: number;
   productoCategoria?: ProductoCategoria;
 }
 

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { RoleGuard } from './core/guards/role.guard';
 
 const routes: Routes = [
   {
@@ -24,6 +25,18 @@ const routes: Routes = [
       {
         path: 'sales',
         loadChildren: () => import('./features/sales/sales.module').then(m => m.SalesModule)
+      },
+      {
+        path: 'clients',
+        canActivate: [RoleGuard],
+        data: { role: 'admin' },
+        loadChildren: () => import('./features/clients/clients.module').then(m => m.ClientsModule)
+      },
+      {
+        path: 'reports',
+        canActivate: [RoleGuard],
+        data: { role: 'admin' },
+        loadChildren: () => import('./features/reports/reports.module').then(m => m.ReportsModule)
       },
       {
         path: '',

@@ -5,6 +5,7 @@ import { CartItem } from '../models/cart.interface';
 import { Producto } from '../models/producto.interface';
 import { SalesService } from './sales.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -109,12 +110,19 @@ export class CartService {
       items
     };
 
-    // Clear cart and navigate to sales on success
     return this.salesService.createSaleFromCart(cartData).pipe(
       map(response => {
-        // Clear cart after successful purchase
         this.clearCart();
-        // Navigate to sales history
+        if (response.stock_critico) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Venta registrada',
+            text: 'Uno o más productos han alcanzado stock crítico. Revisa el inventario.',
+            confirmButtonText: 'Entendido',
+            timer: 8000,
+            timerProgressBar: true,
+          });
+        }
         this.router.navigate(['/sales']);
         return true;
       })

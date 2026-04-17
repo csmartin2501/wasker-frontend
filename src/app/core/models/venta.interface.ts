@@ -47,11 +47,21 @@ export interface VentaCreate {
   id_cliente: number;
   id_vendedor: number;
   id_tipo_pago: number;
+  id_sucursal?: number;
   detalle: {
     id_producto: number;
     cantidad: number;
     precio_unitario: number;
   }[];
+}
+
+export interface VentaCreateResponse {
+  id_venta: number;
+  fecha_venta: string;
+  id_cliente: number;
+  id_vendedor: number;
+  id_tipo_pago: number;
+  stock_critico: boolean;
 }
 
 export interface VentaResponse {

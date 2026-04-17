@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { Venta, VentaCreate } from '../models/venta.interface';
+import { Venta, VentaCreate, VentaCreateResponse } from '../models/venta.interface';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -121,16 +121,16 @@ export class SalesService {
   }
 
   // Create a sale from cart data
-  createSaleFromCart(cartData: { 
-    id_cliente: number; 
-    id_vendedor: number; 
-    id_tipo_pago: number; 
-    items: { 
-      id_producto: number; 
-      cantidad: number; 
-      precio_unitario: number; 
+  createSaleFromCart(cartData: {
+    id_cliente: number;
+    id_vendedor: number;
+    id_tipo_pago: number;
+    items: {
+      id_producto: number;
+      cantidad: number;
+      precio_unitario: number;
     }[]
-  }): Observable<Venta> {
+  }): Observable<VentaCreateResponse> {
     const token = localStorage.getItem('token');
     if (!token) {
       return throwError(() => new Error('Authentication required'));
@@ -148,26 +148,17 @@ export class SalesService {
       detalle: cartData.items
     };
 
-    return this.http.post<Venta>(`${this.apiUrl}/ventas/`, ventaData, { headers })
+    return this.http.post<VentaCreateResponse>(`${this.apiUrl}/ventas/`, ventaData, { headers })
       .pipe(
         catchError(error => {
           console.error('Error creating sale:', error);
           let errorMsg = 'Error al crear la venta';
-          if (error.error?.message) {
+          if (error.error?.detail) {
+            errorMsg = error.error.detail;
+          } else if (error.error?.message) {
             errorMsg = error.error.message;
           }
-          return throwError(() => error);
-        }),
-        tap(createdSale => {
-          // Add to the list
-          const currentSales = this.ventasSubject.value;
-          const processedSale = {
-            ...createdSale,
-            totalItems: createdSale.detalle?.reduce((sum, item) => sum + (item.cantidad || 0), 0) || 0,
-            subtotal: createdSale.detalle?.reduce((sum, item) => sum + (item.cantidad * item.precio_unitario), 0) || 0,
-            total: createdSale.detalle?.reduce((sum, item) => sum + (item.cantidad * item.precio_unitario), 0) || 0
-          };
-          this.ventasSubject.next([processedSale, ...currentSales]);
+          return throwError(() => ({ ...error, userMessage: errorMsg }));
         })
       );
   }

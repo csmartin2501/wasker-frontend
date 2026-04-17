@@ -97,17 +97,39 @@
 
       <!-- Resumen del total -->
       <div class="row justify-content-end mt-3">
-        <div class="col-md-4">
+        <div class="col-md-5">
           <div class="card">
             <div class="card-body">
               <h5 class="card-title mb-3">Resumen del pedido</h5>
+
+              <!-- Selector cliente -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Cliente *</label>
+                <select class="form-select" [(ngModel)]="selectedClienteId">
+                  <option [ngValue]="null" disabled>Seleccionar cliente...</option>
+                  <option *ngFor="let c of clientes" [value]="c.id_cliente">
+                    {{ c.nombre_completo || ((c.nombres || '') + ' ' + (c.apellido_paterno || '')) }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Selector tipo de pago -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Tipo de Pago *</label>
+                <select class="form-select" [(ngModel)]="selectedTipoPagoId">
+                  <option [ngValue]="null" disabled>Seleccionar pago...</option>
+                  <option *ngFor="let tp of tiposPago" [value]="tp.id_tipo_pago">
+                    {{ tp.tipo_pago }}
+                  </option>
+                </select>
+              </div>
+
+              <hr>
 
               <div class="d-flex justify-content-between mb-2">
                 <span class="text-muted">Cantidad de productos:</span>
                 <span class="fw-semibold">{{ totalItems$ | async }}</span>
               </div>
-
-              <hr>
 
               <div class="d-flex justify-content-between mb-3">
                 <span class="fw-bold fs-5">Total:</span>
@@ -119,8 +141,9 @@
               <button
                 class="btn btn-success w-100"
                 (click)="onConfirmPurchase()"
-                [disabled]="(totalItems$ | async) === 0"
+                [disabled]="(totalItems$ | async) === 0 || !canConfirm || procesando"
               >
+                <span *ngIf="procesando" class="spinner-border spinner-border-sm me-1"></span>
                 ✅ Confirmar pedido
               </button>
 

@@ -1,0 +1,56 @@
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">{{ isEditing ? 'Editar Cliente' : 'Nuevo Cliente' }}</h4>
+    <a routerLink="/clients/list" class="btn btn-outline-secondary btn-sm">← Volver</a>
+  </div>
+
+  <div *ngIf="loading && isEditing" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+
+  <div class="row" *ngIf="!loading || !isEditing">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+            <div class="mb-3">
+              <label class="form-label">RUT *</label>
+              <input type="text" class="form-control" formControlName="rut" placeholder="12345678-9"
+                [class.is-invalid]="f['rut'].invalid && f['rut'].touched">
+              <div class="invalid-feedback">RUT requerido (mínimo 8 caracteres).</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Nombres *</label>
+              <input type="text" class="form-control" formControlName="nombres"
+                [class.is-invalid]="f['nombres'].invalid && f['nombres'].touched">
+              <div class="invalid-feedback">Campo requerido.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Apellido Paterno *</label>
+              <input type="text" class="form-control" formControlName="apellido_paterno"
+                [class.is-invalid]="f['apellido_paterno'].invalid && f['apellido_paterno'].touched">
+              <div class="invalid-feedback">Campo requerido.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Apellido Materno</label>
+              <input type="text" class="form-control" formControlName="apellido_materno">
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+              <button type="submit" class="btn btn-primary" [disabled]="loading">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+                {{ isEditing ? 'Actualizar' : 'Crear Cliente' }}
+              </button>
+              <a routerLink="/clients/list" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
