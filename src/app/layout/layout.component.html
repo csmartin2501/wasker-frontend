@@ -53,87 +53,49 @@
       <div class="position-sticky top-0 pt-2">
         <p class="text-uppercase fw-semibold small px-3 mb-2 text-light">Menú</p>
         <ul class="nav flex-column">
-          <!-- Carrito -->
-          <li class="nav-item-main nav-item">
-            <a
-              class="nav-link text-light px-3 py-2 rounded d-flex align-items-center"
-              routerLink="/cart"
-              routerLinkActive="active"
-            >
-              <span><span class="me-2">🛒</span> Carrito de Compras</span>
-            </a>
-          </li>
 
-          <!-- Historial de Ventas -->
-          <li class="nav-item-main nav-item">
-            <a
-              class="nav-link text-light px-3 py-2 rounded d-flex align-items-center"
-              routerLink="/sales"
-              routerLinkActive="active"
-            >
-              <span><span class="me-2">📋</span> Historial de Ventas</span>
-            </a>
-          </li>
+          <ng-container *ngFor="let m of topLevelMenus">
 
-          <!-- Clientes (solo admin) -->
-          <li class="nav-item-main nav-item" *ngIf="authService.isAdmin()">
-            <a
-              class="nav-link text-light px-3 py-2 rounded d-flex align-items-center"
-              routerLink="/clients/list"
-              routerLinkActive="active"
-            >
-              <span><span class="me-2">👥</span> Clientes</span>
-            </a>
-          </li>
+            <!-- Ítem collapsible (sin ruta directa) -->
+            <li class="nav-item-main nav-item" *ngIf="!m.descripcion">
+              <a
+                class="nav-link sidebar-toggle text-light px-3 py-2 rounded d-flex justify-content-between align-items-center"
+                [href]="'#submenu' + m.id_menu"
+                data-bs-toggle="collapse"
+                role="button"
+                aria-expanded="false"
+                [attr.aria-controls]="'submenu' + m.id_menu"
+              >
+                <span><span class="me-2">{{ iconos[m.id_menu] }}</span> {{ m.menu }}</span>
+                <span class="sidebar-arrow">&#9662;</span>
+              </a>
+              <div class="collapse" [id]="'submenu' + m.id_menu">
+                <ul class="nav flex-column submenu ps-3">
+                  <li class="nav-item" *ngFor="let child of productChildren">
+                    <a
+                      class="nav-link text-light px-3 py-1 rounded"
+                      [routerLink]="child.descripcion"
+                      routerLinkActive="active"
+                    >
+                      <span class="me-2">{{ iconos[child.id_menu] }}</span> {{ child.menu }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
 
-          <!-- Reportes (solo admin) -->
-          <li class="nav-item-main nav-item" *ngIf="authService.isAdmin()">
-            <a
-              class="nav-link text-light px-3 py-2 rounded d-flex align-items-center"
-              routerLink="/reports"
-              routerLinkActive="active"
-            >
-              <span><span class="me-2">📊</span> Reportes</span>
-            </a>
-          </li>
+            <!-- Ítem de enlace directo -->
+            <li class="nav-item-main nav-item" *ngIf="m.descripcion">
+              <a
+                class="nav-link text-light px-3 py-2 rounded d-flex align-items-center"
+                [routerLink]="m.descripcion"
+                routerLinkActive="active"
+              >
+                <span><span class="me-2">{{ iconos[m.id_menu] }}</span> {{ m.menu }}</span>
+              </a>
+            </li>
 
-          <!-- Productos (collapsible) -->
-          <li class="nav-item-main nav-item">
-            <a
-              class="nav-link sidebar-toggle text-light px-3 py-2 rounded d-flex justify-content-between align-items-center"
-              href="#submenuProductos"
-              data-bs-toggle="collapse"
-              role="button"
-              aria-expanded="false"
-              aria-controls="submenuProductos"
-            >
-              <span><span class="me-2">📦</span> Productos</span>
-              <span class="sidebar-arrow">&#9662;</span>
-            </a>
-            <div class="collapse" id="submenuProductos">
-              <ul class="nav flex-column submenu ps-3">
-                <li class="nav-item">
-                  <a
-                    class="nav-link text-light px-3 py-1 rounded"
-                    routerLink="/products/list"
-                    [routerLinkActiveOptions]="{ exact: true }"
-                    routerLinkActive="active"
-                  >
-                    <span class="me-2">📋</span> Lista de Productos
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link text-light px-3 py-1 rounded"
-                    routerLink="/products/form"
-                    routerLinkActive="active"
-                  >
-                    <span class="me-2">➕</span> Agregar Producto
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </li>
+          </ng-container>
 
         </ul>
       </div>

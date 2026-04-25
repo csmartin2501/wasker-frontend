@@ -1,0 +1,127 @@
+<div class="container-fluid">
+
+  <!-- Bienvenida -->
+  <div class="mb-4">
+    <h4 class="mb-1">Bienvenido, {{ username }}
+      <span *ngIf="isAdmin" class="badge bg-warning text-dark ms-2 fs-6">Admin</span>
+    </h4>
+    <p class="text-muted mb-0">Sistema de Gestión — Comercial Wasker SpA</p>
+  </div>
+
+  <!-- Accesos rápidos -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <a routerLink="/cart" class="card text-decoration-none h-100 text-center card-hover">
+        <div class="card-body py-4">
+          <div class="fs-1 mb-2">🛒</div>
+          <p class="fw-semibold mb-0 text-dark">Nueva Venta</p>
+        </div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a routerLink="/sales" class="card text-decoration-none h-100 text-center card-hover">
+        <div class="card-body py-4">
+          <div class="fs-1 mb-2">📋</div>
+          <p class="fw-semibold mb-0 text-dark">Historial de Ventas</p>
+        </div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a routerLink="/products/list" class="card text-decoration-none h-100 text-center card-hover">
+        <div class="card-body py-4">
+          <div class="fs-1 mb-2">📦</div>
+          <p class="fw-semibold mb-0 text-dark">Productos</p>
+        </div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3" *ngIf="isAdmin">
+      <a routerLink="/clients/list" class="card text-decoration-none h-100 text-center card-hover">
+        <div class="card-body py-4">
+          <div class="fs-1 mb-2">👥</div>
+          <p class="fw-semibold mb-0 text-dark">Clientes</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- KPIs (solo admin) -->
+  <ng-container *ngIf="isAdmin">
+    <h5 class="mb-3 text-muted fw-semibold">Resumen General</h5>
+
+    <div *ngIf="loading" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <ng-container *ngIf="!loading && reporte">
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm text-center">
+            <div class="card-body">
+              <p class="text-muted small mb-1">Total Ventas</p>
+              <p class="display-6 fw-bold text-primary mb-0">{{ reporte.total_ventas }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm text-center">
+            <div class="card-body">
+              <p class="text-muted small mb-1">Monto Total</p>
+              <p class="display-6 fw-bold text-success mb-0">${{ reporte.monto_total | number:'1.0-0' }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm text-center">
+            <div class="card-body">
+              <p class="text-muted small mb-1">Ticket Promedio</p>
+              <p class="display-6 fw-bold text-info mb-0">${{ reporte.ticket_promedio | number:'1.0-0' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alertas stock crítico -->
+      <div *ngIf="reporte.stock_critico.length > 0" class="alert alert-warning d-flex align-items-start gap-2 mb-4">
+        <span class="fs-5">⚠️</span>
+        <div>
+          <strong>Stock crítico:</strong>
+          <span *ngFor="let s of reporte.stock_critico; let last = last">
+            {{ s.nombre_producto }} ({{ s.stock_actual }}){{ last ? '' : ', ' }}
+          </span>
+          — <a routerLink="/reports" class="alert-link">Ver reportes</a>
+        </div>
+      </div>
+
+      <!-- Top productos -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-bottom">
+          <h6 class="mb-0">Top 5 productos más vendidos</h6>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-sm mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th>Producto</th>
+                <th class="text-end">Unidades</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of reporte.productos_mas_vendidos; let i = index">
+                <td class="text-muted">{{ i + 1 }}</td>
+                <td>{{ p.nombre_producto }}</td>
+                <td class="text-end fw-semibold">{{ p.total_vendido }}</td>
+              </tr>
+              <tr *ngIf="reporte.productos_mas_vendidos.length === 0">
+                <td colspan="3" class="text-center text-muted py-3">Sin datos de ventas</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </ng-container>
+  </ng-container>
+
+</div>

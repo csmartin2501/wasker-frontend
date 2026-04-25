@@ -7,13 +7,15 @@ import { ProductFormComponent } from './components/product-form/product-form.com
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductsComponent } from './products.component';
 import { EditProductModalComponent } from './components/edit-product-modal/edit-product-modal.component';
+import { CategoriaListComponent } from './components/categoria-list/categoria-list.component';
 
 @NgModule({
   declarations: [
     ProductFormComponent,
     ProductListComponent,
     ProductsComponent,
-    EditProductModalComponent
+    EditProductModalComponent,
+    CategoriaListComponent
   ],
   imports: [
     CommonModule,

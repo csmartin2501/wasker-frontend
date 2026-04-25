@@ -1,0 +1,116 @@
+<div class="container-fluid">
+  <div class="d-flex align-items-center mb-4 gap-2">
+    <button class="btn btn-outline-secondary btn-sm" routerLink="/usuarios/list">← Volver</button>
+    <h4 class="mb-0">Nuevo Usuario</h4>
+  </div>
+
+  <div class="card shadow-sm" style="max-width: 600px;">
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <div class="row g-3">
+
+          <div class="col-12">
+            <label class="form-label fw-semibold">Nombre de usuario *</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="nombre_usuario"
+              placeholder="Ej: jperez"
+              [class.is-invalid]="f['nombre_usuario'].invalid && f['nombre_usuario'].touched"
+            >
+            <div class="invalid-feedback">Mínimo 3 caracteres.</div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold">Contraseña *</label>
+            <input
+              type="password"
+              class="form-control"
+              formControlName="password"
+              placeholder="Mínimo 6 caracteres"
+              [class.is-invalid]="f['password'].invalid && f['password'].touched"
+            >
+            <div class="invalid-feedback">Mínimo 6 caracteres.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Nombres *</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="nombres"
+              placeholder="Juan"
+              [class.is-invalid]="f['nombres'].invalid && f['nombres'].touched"
+            >
+            <div class="invalid-feedback">Requerido.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Apellido Paterno *</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="apellido_paterno"
+              placeholder="Pérez"
+              [class.is-invalid]="f['apellido_paterno'].invalid && f['apellido_paterno'].touched"
+            >
+            <div class="invalid-feedback">Requerido.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Apellido Materno</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="apellido_materno"
+              placeholder="Opcional"
+            >
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">RUT *</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="rut"
+              placeholder="12345678-9"
+              [class.is-invalid]="f['rut'].invalid && f['rut'].touched"
+            >
+            <div class="invalid-feedback">Ingrese un RUT válido.</div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold">Perfil / Rol *</label>
+            <select
+              class="form-select"
+              formControlName="id_perfil"
+              [class.is-invalid]="f['id_perfil'].invalid && f['id_perfil'].touched"
+            >
+              <option *ngFor="let p of perfiles" [value]="p.id_perfil">
+                {{ p.perfil | titlecase }}
+              </option>
+              <option *ngIf="perfiles.length === 0" [value]="2">Vendedor</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="loading"
+          >
+            <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            {{ loading ? 'Guardando...' : 'Crear Usuario' }}
+          </button>
+          <button type="button" class="btn btn-outline-secondary" routerLink="/usuarios/list">
+            Cancelar
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

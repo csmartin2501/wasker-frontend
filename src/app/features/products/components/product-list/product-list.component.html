@@ -91,6 +91,7 @@
              </button>
              
              <button
+               *ngIf="authService.isAdmin()"
                class="btn btn-outline-danger btn-sm w-100"
                (click)="deleteProduct(product)"
              >

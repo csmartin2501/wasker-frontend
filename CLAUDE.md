@@ -7,7 +7,7 @@ Reemplaza registros manuales y Excel dispersos por una plataforma centralizada.
 
 **Stack:**
 - Frontend: Angular (TypeScript) + HTML5 + CSS3
-- Backend: Python (Flask o FastAPI)
+- Backend: Python (FastAPI)
 - Base de datos: MySQL
 - Protocolo: HTTPS, transacciones ACID
 
@@ -28,7 +28,7 @@ El backend expone una REST API. El frontend consume los endpoints. No hay lógic
 ### 1. Inventario
 - CRUD de productos (SKU, nombre, precio, stock, categoría)
 - Alertas visuales cuando stock <= umbral configurado (solo admin puede modificar umbral)
-- Historial de cambios en `productos_historico`
+- Historial de cambios en `productos_historicos`
 
 ### 2. Ventas
 - Registro de transacciones con validación de stock previa al commit
@@ -71,23 +71,23 @@ menus (id_menu, menu, descripcion, orden_menu, vigencia_menu)
 perfiles_menus (id_perfil_menu, id_perfil, id_menu)
 
 clientes (id_cliente, fecha_creacion, fecha_ultima_compra, id_persona)
-productos_categoria (id_producto_categoria, categoria_producto)
-productos (id_producto, sku_producto, nombre_producto, stock, precio_producto, fecha_creacion, id_producto_categoria)
-productos_historico (id_producto_historico, id_producto, fecha_creacion, precio, motivo_cambio)
+productos_categoria (id_producto_categoria, categoria_producto, es_categoria_adulto, es_categoria_gatito)
+productos (id_producto, sku_producto, nombre_producto, stock, precio_producto, imagen_url_producto, fecha_creacion, id_producto_categoria)
+productos_historicos (id_producto_historico, id_producto, fecha_creacion, precio, motivo_cambio)
 
 ventas (id_venta, fecha_venta, id_cliente, id_vendedor, id_tipo_pago)
 detalle_venta (id_detalle, cantidad, precio_unitario, id_venta, id_producto)
 tipos_pagos (id_tipo_pago, tipo_pago)
-ventas_pagos (id_pago, id_venta, id_tipo_pago, monto)
+ventas_pagos (id_pago, id_venta, id_tipo_pago, monto, fecha)
 
 sucursales (id_sucursal, sucursal, fecha_creacion, id_ciudad)
 stock_sucursal (id_producto, id_sucursal, stock_actual, stock_minimo)
-cajas (id_caja, id_sucursal, codigo, fecha)
+cajas (id_caja, id_sucursal, codigo)
 
 vendedores (id_vendedor, fecha_ultima_venta, id_persona)
 regiones (id_region, codigo_region, region)
-ciudades (id_ciudad, ciudad, fecha_creacion, id_comuna)
 comunas (id_comuna, comuna, fecha_creacion, id_region)
+ciudades (id_ciudad, ciudad, fecha_creacion, id_comuna)
 ```
 
 ---
@@ -102,9 +102,92 @@ comunas (id_comuna, comuna, fecha_creacion, id_region)
 
 ---
 
+## Sistema de menús dinámicos (RBAC)
+
+### Modelo de datos
+Los menús visibles por usuario se determinan exclusivamente por las tablas:
+- `menus` — catálogo de ítems de navegación (`vigencia_menu = 'S'` para activos)
+- `perfiles_menus` — relación perfil → menús permitidos
+- `usuarios_perfiles` — relación usuario → perfiles asignados
+
+### Menús registrados
+
+| id_menu | menu                | descripcion            | orden | perfiles con acceso |
+|---------|---------------------|------------------------|-------|---------------------|
+| 1       | Inicio              | /dashboard             | 1     | Admin, Vendedor     |
+| 2       | Carrito de Compras  | /cart                  | 2     | Admin, Vendedor     |
+| 3       | Historial de Ventas | /sales                 | 3     | Admin, Vendedor     |
+| 4       | Clientes            | /clients/list          | 4     | Admin               |
+| 5       | Reportes            | /reports               | 5     | Admin               |
+| 6       | Usuarios            | /usuarios/list         | 6     | Admin               |
+| 7       | Productos           | NULL (collapsible)     | 7     | Admin, Vendedor     |
+| 8       | Lista de Productos  | /products/list         | 8     | Admin, Vendedor     |
+| 9       | Agregar Producto    | /products/form         | 9     | Admin               |
+| 10      | Categorías          | /products/categorias   | 10    | Admin               |
+
+### Backend — endpoint requerido
+
+```
+GET /api/menus/mis-menus
+```
+
+- Requiere JWT válido en `Authorization: Bearer <token>`
+- Extrae `id_usuario` del token
+- Query:
+
+```sql
+SELECT m.id_menu, m.menu, m.descripcion, m.orden_menu
+FROM menus m
+JOIN perfiles_menus pm ON m.id_menu = pm.id_menu
+JOIN usuarios_perfiles up ON pm.id_perfil = up.id_perfil
+WHERE up.id_usuario = :id_usuario
+  AND m.vigencia_menu = 'S'
+ORDER BY m.orden_menu ASC
+```
+
+- 401 si token inválido
+- `[]` si el usuario no tiene perfiles asignados
+
+Archivos:
+```
+app/routes/menus.py
+app/services/menu_service.py
+```
+Registrar en `main.py` con `prefix="/api/menus"`.
+
+### Frontend — implementación requerida
+
+1. **Interfaz** `Menu`:
+```typescript
+{ id_menu: number, menu: string, descripcion: string | null, orden_menu: number }
+```
+
+2. **Servicio** `src/app/core/services/menu.service.ts`
+   - `getMisMenus(): Observable<Menu[]>`
+   - El JWT lo adjunta el interceptor, no gestionar aquí
+
+3. **Componente sidebar**
+   - Inyectar `MenuService`
+   - `ngOnInit` llama `getMisMenus()`, almacena en `menus: Menu[]`
+   - Reemplazar ítems hardcodeados por `*ngFor` sobre `menus`
+   - Usar `descripcion` como `routerLink`
+   - Mapeo de íconos local en el componente, indexado por `id_menu`
+
+4. **AuthInterceptor** en `core/interceptors/`
+   - Si no existe, crearlo
+   - Adjunta `Authorization: Bearer <token>` a toda petición HTTP saliente
+
+### Restricciones
+- Ningún menú hardcodeado en ningún componente tras este cambio
+- Sin dependencias npm ni pip nuevas
+- `try/except` en cada función Python, `catchError` en cada Observable Angular
+- No modificar lógica de autenticación ni guards existentes
+
+---
+
 ## Convenciones de código
 
-- **Python:** snake_case, sin frameworks pesados innecesarios. Flask o FastAPI, lo que ya esté configurado.
+- **Python:** snake_case, sin frameworks pesados innecesarios. FastAPI.
 - **Angular:** componentes por módulo (products, sales, clients, reports, auth). Servicios para las llamadas HTTP.
 - **SQL:** nombres de tablas y columnas en snake_case, igual que el modelo físico documentado.
 - **No sobre-ingenierizar.** Código funcional y legible. Sin patrones abstractos innecesarios para una app de este tamaño.
@@ -117,22 +200,22 @@ comunas (id_comuna, comuna, fecha_creacion, id_region)
 wasker-backend/
   app/
     models/         # clases ORM o queries SQL
-    routes/         # blueprints por módulo (ventas, productos, clientes, reportes, auth)
+    routes/         # routers por módulo (ventas, productos, clientes, reportes, auth, menus)
     services/       # lógica de negocio (validaciones, cálculos)
     utils/          # helpers (hash, jwt, etc.)
   config.py
-  run.py
+  main.py
 
 wasker-frontend/
   src/app/
-    core/           # guards, interceptors, auth service
+    core/           # guards, interceptors, auth service, menu service
     features/
       products/
       sales/
       clients/
       reports/
     shared/         # componentes reutilizables, pipes
-    layout/
+    layout/         # sidebar, navbar
   environments/
 ```
 

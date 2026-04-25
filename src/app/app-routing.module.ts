@@ -39,8 +39,18 @@ const routes: Routes = [
         loadChildren: () => import('./features/reports/reports.module').then(m => m.ReportsModule)
       },
       {
+        path: 'usuarios',
+        canActivate: [RoleGuard],
+        data: { role: 'admin' },
+        loadChildren: () => import('./features/usuarios/usuarios.module').then(m => m.UsuariosModule)
+      },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule)
+      },
+      {
         path: '',
-        redirectTo: 'products',
+        redirectTo: 'dashboard',
         pathMatch: 'full'
       }
     ]

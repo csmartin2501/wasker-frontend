@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Producto } from '../../../../core/models/producto.interface';
 import { ProductoService } from '../../../../core/services/producto.service';
 import { CartService } from '../../../../core/services/cart.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import Swal from 'sweetalert2';
 import { environment } from '../../../../../environments/environment';
 
@@ -22,7 +23,8 @@ export class ProductListComponent implements OnInit {
 
   constructor(
     private productoService: ProductoService,
-    private cartService: CartService
+    private cartService: CartService,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {
