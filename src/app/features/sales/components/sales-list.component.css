@@ -1,0 +1,78 @@
+/* ===== Encabezado ===== */
+h4 {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.btn-outline-primary {
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+    font-weight: 600;
+    border-radius: 7px;
+    transition: all 0.18s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* ===== Tabla de ventas ===== */
+.table-responsive {
+    background-color: var(--card-bg);
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead.table-light th {
+    background-color: var(--page-bg);
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table tbody tr {
+    transition: background-color 0.18s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(61, 122, 128, 0.06);
+}
+
+.table tbody tr.table-success {
+    --bs-table-bg: rgba(212, 175, 55, 0.10);
+}
+
+.table td {
+    color: var(--text-dark);
+    vertical-align: middle;
+}
+
+.table td.fw-bold {
+    color: var(--brand-primary-dark);
+}
+
+/* ===== Botón de acciones ===== */
+.btn-sm.btn-outline-primary {
+    border-radius: 6px;
+}
+
+/* ===== Estado vacío ===== */
+.display-1 {
+    font-size: 3.5rem;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}

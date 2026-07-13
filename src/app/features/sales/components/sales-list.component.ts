@@ -9,11 +9,12 @@ import { SalesService } from '../../../core/services/sales.service';
   styleUrls: ['./sales-list.component.css']
 })
 export class SalesListComponent implements OnInit {
-  ventas$!: Observable<Venta[]>;
+  ventas$: Observable<Venta[]>;
   loading$: Observable<boolean>;
   error$: Observable<string | null>;
 
   constructor(private salesService: SalesService) {
+    this.ventas$ = this.salesService.ventas$;
     this.loading$ = this.salesService.loading$;
     this.error$ = this.salesService.error$;
   }
