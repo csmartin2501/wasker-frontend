@@ -123,7 +123,6 @@ export class SalesService {
   // Create a sale from cart data
   createSaleFromCart(cartData: {
     id_cliente: number;
-    id_vendedor: number;
     id_tipo_pago: number;
     items: {
       id_producto: number;
@@ -143,7 +142,6 @@ export class SalesService {
 
     const ventaData: VentaCreate = {
       id_cliente: cartData.id_cliente,
-      id_vendedor: cartData.id_vendedor,
       id_tipo_pago: cartData.id_tipo_pago,
       detalle: cartData.items
     };

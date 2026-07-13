@@ -83,7 +83,7 @@ export class CartDetailComponent implements OnInit {
     }
 
     this.procesando = true;
-    this.cartService.confirmPurchase(this.selectedClienteId, 1, this.selectedTipoPagoId).subscribe({
+    this.cartService.confirmPurchase(this.selectedClienteId, this.selectedTipoPagoId).subscribe({
       next: () => { this.procesando = false; },
       error: (error) => {
         this.procesando = false;

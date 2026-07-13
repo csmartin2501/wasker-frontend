@@ -87,8 +87,7 @@ export class CartService {
   }
 
   // Confirm purchase and create sale
-  confirmPurchase(id_cliente: number, id_vendedor: number, id_tipo_pago: number): Observable<boolean> {
-    // Convert cart items to venta format
+  confirmPurchase(id_cliente: number, id_tipo_pago: number): Observable<boolean> {
     const cartItems = this.items;
     if (cartItems.length === 0) {
       return new Observable<boolean>(observer => {
@@ -98,14 +97,13 @@ export class CartService {
     }
 
     const items = cartItems.map(item => ({
-      id_producto: item.producto.id_producto ?? 0,
+      id_producto: item.producto.id_producto!,
       cantidad: item.cantidad,
-      precio_unitario: item.producto.precio_producto ?? 0
+      precio_unitario: item.producto.precio_producto!
     }));
 
     const cartData = {
       id_cliente,
-      id_vendedor,
       id_tipo_pago,
       items
     };

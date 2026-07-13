@@ -45,7 +45,6 @@ export interface Venta {
 
 export interface VentaCreate {
   id_cliente: number;
-  id_vendedor: number;
   id_tipo_pago: number;
   id_sucursal?: number;
   detalle: {
